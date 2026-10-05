@@ -1,0 +1,73 @@
+{
+  "tool": "built-in image_gen",
+  "transparent_background": true,
+  "reference": "C:/Users/rv941/AppData/Local/Temp/codex-clipboard-ae246a63-7959-4c89-a020-d7182da615a3.png",
+  "canvas": [
+    768,
+    1024
+  ],
+  "foot_baseline": 1000,
+  "processing": "Alpha bounds threshold 8/255 removes imperceptible scattered pixels; proportional resize to 960 pixels character height; center x384 and foot baseline y1000 on 768x1024 RGBA canvas. Original generated files retained.",
+  "assets": [
+    {
+      "name": "worried",
+      "source": "C:/Users/rv941/.codex/generated_images/01a109e5-918f-7c81-9441-e3163462f93f/exec-d344e541-4f7b-4f01-b98b-ce80c72d87b8.png",
+      "output": "E:/hypercasual game/assets/art/courier_worried.png",
+      "prompt": "Use case: illustration-story. Asset type: transparent full-body 2D mobile game courier sprite. Reference image is STYLE AND CHARACTER reference only. Extract/recreate precisely the same youthful courier identity, dark curly hair, large expressive eyes, coral red baseball cap, mustard yellow zip jacket with tiny envelope badge, brown leather crossbody mailbag with envelope motif, dark blue cuffed trousers, white sneakers with coral accents, thick dark navy hand-drawn contours and subtle painterly shading. Pose: anxious startled mid-step with knees bent, looking upward toward right, hands raised, mouth open, same worried pose as reference. Composition: single centered complete character, both soles visible at same baseline, ample transparent margin around silhouette, front three-quarter view slightly facing right. Preserve the reference's charming comic-book illustration quality. Constraints: TRUE TRANSPARENT BACKGROUND. No environment, no floor, no shadow, no crate, no UI, no lettering, no floating sweat marks, no extra props, no duplicates. Only one courier sprite.",
+      "original_size": [
+        1224,
+        1285
+      ],
+      "alpha_bounds": [
+        227,
+        21,
+        1108,
+        1250
+      ],
+      "normalized_sprite_size": [
+        688,
+        960
+      ]
+    },
+    {
+      "name": "walk",
+      "source": "C:/Users/rv941/.codex/generated_images/01a109e5-918f-7c81-9441-e3163462f93f/exec-2b8d7d52-f4cf-45b9-9afe-a50b0a46f61f.png",
+      "output": "E:/hypercasual game/assets/art/courier_walk.png",
+      "prompt": "Use case: illustration-story. Asset type: transparent full-body 2D mobile game courier sprite, WALK pose. Input 1 is overall art reference; Input 2 is exact courier identity and costume reference. Draw exactly the same youthful courier as Input 2, dark curly hair, large expressive eyes, coral red baseball cap, mustard yellow zip jacket with envelope badge, brown leather crossbody mailbag with envelope motif, dark blue cuffed trousers, white sneakers with coral accents. Pose changes only: confident cheerful walking mid-step towards right, one foot forward, arms naturally swinging, relaxed small smile, eyes looking right. Thick dark navy hand-drawn contours, clean shaded comic-book illustration matching reference. Composition: single centered complete fullbody character, both soles fully visible, ample transparent margin around silhouette, front three-quarter view slightly facing right; body and head proportions identical to Input 2. Constraints: TRUE TRANSPARENT BACKGROUND. No environment, no floor, no shadow, no UI, no lettering, no extra props, no duplicates. Only one courier.",
+      "original_size": [
+        1225,
+        1284
+      ],
+      "alpha_bounds": [
+        250,
+        23,
+        1082,
+        1250
+      ],
+      "normalized_sprite_size": [
+        651,
+        960
+      ]
+    },
+    {
+      "name": "happy",
+      "source": "C:/Users/rv941/.codex/generated_images/01a109e5-918f-7c81-9441-e3163462f93f/exec-4c68c692-6cf9-447b-bb8a-87b091c9599b.png",
+      "output": "E:/hypercasual game/assets/art/courier_happy.png",
+      "prompt": "Use case: illustration-story. Asset type: transparent full-body 2D mobile game courier sprite, HAPPY SUCCESS pose. Input 1 is overall art reference; Input 2 is exact courier identity and costume reference. Draw exactly the same youthful courier as Input 2, dark curly hair, large expressive eyes, coral red baseball cap, mustard yellow zip jacket with envelope badge, brown leather crossbody mailbag with envelope motif, dark blue cuffed trousers, white sneakers with coral accents. Pose changes only: joyful relieved victory, one fist raised above shoulder, other hand giving a thumbs-up, broad delighted smile, feet planted, slightly facing right. Thick dark navy hand-drawn contours, clean shaded comic-book illustration matching reference. Composition: single centered complete fullbody character, both soles fully visible, ample transparent margin around silhouette, front three-quarter view slightly facing right; body and head proportions identical to Input 2. Constraints: TRUE TRANSPARENT BACKGROUND. No environment, no floor, no shadow, no confetti, no UI, no lettering, no extra props, no duplicates. Only one courier.",
+      "original_size": [
+        1224,
+        1285
+      ],
+      "alpha_bounds": [
+        261,
+        22,
+        1079,
+        1275
+      ],
+      "normalized_sprite_size": [
+        627,
+        960
+      ]
+    }
+  ]
+}

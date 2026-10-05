@@ -1,0 +1,28 @@
+{
+  "mode": "built-in image_gen",
+  "reference": "C:/Users/rv941/AppData/Local/Temp/codex-clipboard-ae246a63-7959-4c89-a020-d7182da615a3.png",
+  "processing": "Trimmed to nonzero alpha bounds; resized with Lanczos to maximum640 pixels; RGBA preserved; originals retained.",
+  "assets": [
+    {
+      "name": "tray",
+      "prompt": "Use case: stylized-concept. Asset type: standalone mobile cartoon game hazard sprite on true transparent background. Image 1 is STYLE REFERENCE ONLY: match its warm handpainted storybook cartoon art, bold dark navy contours, tactile painted shading, cheerful saturated palette. Create ONE cohesive falling cafe serving tray: warm orange oval tray tilted slightly diagonally, two cream coffee cups sitting on it and one golden croissant, all tightly composed as one intact object. Three-quarter side view, readable silhouette. Center the full object with generous transparent margin. Strong navy outer contour, no shadow outside the object, no scenery, no separate scattered particles, no characters, no interface, no glow, no lettering, no border, no watermark. Background must be genuinely transparent alpha.",
+      "source": "C:/Users/rv941/.codex/generated_images/01a109e5-686f-7df0-852b-0f8c841ee6f5/exec-1117f600-3f40-447b-b55c-e83e39a49b67.png",
+      "output": "E:/hypercasual game/assets/art/hazard_tray.png",
+      "inspection": "Full cohesive object, navy contours, warm handpainted cartoon style, genuine transparent RGBA background."
+    },
+    {
+      "name": "branch",
+      "prompt": "Use case: stylized-concept. Asset type: standalone mobile game hazard sprite on genuinely transparent alpha background. Input image 1 is STYLE REFERENCE ONLY. Match the illustration's warm handpainted tactile cartoon rendering, vivid saturated colors and thick dark navy contours. Create one thick broken tree branch oriented horizontally: rugged warm brown bark trunk with a snapped splintered left end, a few compact offshoots and rich emerald green leafy tufts on its upper and right side. Cohesive SINGLE intact object with readable long silhouette, blunt cartoony splinters, no loose particles. Full object centered with transparent margin, side view. No external shadow, no surrounding tree, no scene, no character, no ground, no background color, no UI, no words, no glow, no border, no watermark. Must have actual transparent background.",
+      "source": "C:/Users/rv941/.codex/generated_images/01a109e5-686f-7df0-852b-0f8c841ee6f5/exec-5eed2ee1-16c0-49cb-9c3d-58de0a653b66.png",
+      "output": "E:/hypercasual game/assets/art/hazard_branch.png",
+      "inspection": "Full cohesive object, navy contours, warm handpainted cartoon style, genuine transparent RGBA background."
+    },
+    {
+      "name": "sculpture",
+      "prompt": "Use case: stylized-concept. Asset type: standalone transparent mobile cartoon game hazard sprite. Image 1 is STYLE REFERENCE ONLY: reproduce rich handpainted cartoon shading, confident thick dark navy contours, tactile material, warm cream gold highlights. Create ONE small classical stone bust on a compact integrated plinth, toppling with a slight 15-degree clockwise tilt. A friendly dignified ancient curly-haired stone head, shoulders with draped toga, short square pedestal seamlessly connected, one cohesive intact falling object. Warm pale sandstone, navy outlines, stylized readable facial features; no live person. Side three-quarter view, full object centered with transparent margin, clear vertical silhouette. Genuine transparent alpha background, NO floor, backdrop, scenery, external shadow, particle fragments, glow, UI, text, watermark, border or extra objects.",
+      "source": "C:/Users/rv941/.codex/generated_images/01a109e5-686f-7df0-852b-0f8c841ee6f5/exec-d03c941a-f23e-45d8-8424-241bcebe7423.png",
+      "output": "E:/hypercasual game/assets/art/hazard_sculpture.png",
+      "inspection": "Full cohesive object, navy contours, warm handpainted cartoon style, genuine transparent RGBA background."
+    }
+  ]
+}

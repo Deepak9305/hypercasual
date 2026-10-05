@@ -1,0 +1,49 @@
+{
+  "tool": "built-in image_gen",
+  "references": [
+    "C:/Users/rv941/AppData/Local/Temp/codex-clipboard-ae246a63-7959-4c89-a020-d7182da615a3.png",
+    "E:/hypercasual game/assets/art/courier_happy.png"
+  ],
+  "canvas": [
+    1024,
+    1024
+  ],
+  "android_background": "#FFF5DF",
+  "processing": "Standard icon resized to 1024x1024; foreground alpha-bounds threshold 8/255 cropped and proportionally fitted inside 620x620 center safe zone. Generated originals retained.",
+  "assets": [
+    {
+      "name": "launcher",
+      "source": "C:/Users/rv941/.codex/generated_images/01a109e5-918f-7c81-9441-e3163462f93f/exec-4dad01f8-b9d2-4db9-b7b0-1129aa47b178.png",
+      "output": "E:/hypercasual game/assets/art/launcher.png",
+      "transparent_background": false,
+      "prompt": "Use case: illustration-story. Asset type: square Android game launcher icon, Freeze Frame. Input 1 is selected game aesthetic reference, Input 2 is exact courier identity. Generate a polished 1024x1024 square raster illustration with no text. Charming courier face with same dark curly hair, huge expressive eyes, coral baseball cap and mustard jacket at center, joyful amazed expression. A small suspended wooden crate hovers above his right shoulder, surrounded by a luminous cyan circular time-freeze ripple. Thick dark navy cartoon outlines, saturated warm coral/yellow colors, clean lively comic-book shading matching Input 1. Background warm cream with soft luminous cyan accent circle, full square image edge-to-edge. Composition: keep courier face, cap, jacket, crate and ripple entirely within central 66 percent safe zone, generous cream margin outside, simple readable at tiny sizes. Constraints: no text, no logo lettering, no rounded app mask, no border, no phone frame, no extra characters.",
+      "original_size": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "name": "launcher_foreground",
+      "source": "C:/Users/rv941/.codex/generated_images/01a109e5-918f-7c81-9441-e3163462f93f/exec-b4ef2a72-5ca8-47ca-84c2-0b5569942a12.png",
+      "output": "E:/hypercasual game/assets/art/launcher_foreground.png",
+      "transparent_background": true,
+      "prompt": "Use case: background-extraction. Asset type: Android adaptive launcher icon FOREGROUND, one transparent square asset. Reference image is edit target. Extract the central courier and hovering wooden crate with cyan freeze ripple, preserving their exact cartoon identity and illustration style. Remove the cream background entirely and make actual transparent alpha. Scale the complete courier/crate/ripple composition down together so ALL visible imagery is inside the center 60% of square width and height, with 20% empty transparent margin on each side. This is critical for adaptive icon safety. Simplify by removing isolated flying splinters and stray cyan streaks outside the main composition. Keep face large and expressive, coral cap, mustard jacket, navy outlines; no text. Canvas is square 1024x1024. The entire bust and crate must remain centered, complete, unobstructed with no edge clipping. TRUE TRANSPARENT BACKGROUND, no cream, no gray, no checkerboard painted into image.",
+      "original_size": [
+        1254,
+        1254
+      ],
+      "source_bounds": [
+        241,
+        139,
+        1105,
+        1155
+      ],
+      "safe_zone_bounds": [
+        248,
+        202,
+        775,
+        822
+      ]
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+.godot/
+build/*
+!build/.gdignore
+!build/FreezeFrame-debug.apk
+tools/__pycache__/
+*.tmp
+assets/art/originals/
+

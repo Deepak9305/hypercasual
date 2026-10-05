@@ -1,0 +1,38 @@
+; Freeze Frame — native Android / desktop Godot project.
+config_version=5
+
+[application]
+config/name="Freeze Frame"
+run/main_scene="res://scenes/game.tscn"
+config/features=PackedStringArray("4.7", "GL Compatibility")
+config/description="Move one object. Change what happens."
+config/icon="res://assets/art/launcher.png"
+
+[autoload]
+SaveData="*res://scripts/save_data.gd"
+Sound="*res://scripts/sound.gd"
+
+[display]
+window/size/viewport_width=780
+window/size/viewport_height=1688
+window/size/window_width_override=390
+window/size/window_height_override=844
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+window/handheld/orientation=1
+
+[rendering]
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+textures/default_filters/use_nearest_mipmap_filter=false
+textures/canvas_textures/default_texture_filter=2
+textures/vram_compression/import_etc2_astc=true
+environment/defaults/default_clear_color=Color(0.98, 0.955, 0.87, 1)
+
+[physics]
+common/physics_ticks_per_second=60
+2d/default_gravity=0.0
+
+[input_devices]
+pointing/emulate_mouse_from_touch=false
+

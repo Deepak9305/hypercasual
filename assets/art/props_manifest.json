@@ -1,0 +1,50 @@
+{
+  "tool": "built-in image_gen",
+  "reference": "C:/Users/rv941/AppData/Local/Temp/codex-clipboard-ae246a63-7959-4c89-a020-d7182da615a3.png",
+  "style": "Cartoon Catastrophe — thick navy contour, saturated coral/yellow/mint, hand ink illustration",
+  "processing": "Preserve RGBA alpha; crop bbox of alpha >16; reduce longest edge to <=720px, then add 12px transparent margin. Originals retained.",
+  "assets": [
+    {
+      "name": "prop_umbrella",
+      "prompt": "Use case: stylized-concept. Asset type: isolated transparent 2D game sprite for Freeze Frame. Input image 1 is STYLE REFERENCE ONLY, do not reproduce interface or scene. Primary request: one coral red open umbrella with dark navy curved handle, canopy broad and protective, shaft vertical and handle at bottom. Match umbrella in lower left card of reference: polished hand-ink cartoon illustration, thick crisp navy contours, warm coral panels, subtle brush texture and cream highlight. Center one complete object on truly transparent background with comfortable margins. Simple near side-on perspective, shallow depth suitable for collision sprite; full canopy and handle visible. No text, UI, cyan effects, ground, cast shadow, other objects, border, or checkerboard.",
+      "generated_source": "C:\\Users\\rv941\\.codex\\generated_images\\01a109e5-c4d5-7123-b485-f11450bcde8e\\exec-391dc051-cd09-4499-98af-d88159be3945.png",
+      "original": "E:/hypercasual game/assets/art/originals/prop_umbrella.png",
+      "output": "E:/hypercasual game/assets/art/prop_umbrella.png"
+    },
+    {
+      "name": "prop_ramp",
+      "prompt": "Use case: stylized-concept. Asset type: isolated transparent 2D game sprite for Freeze Frame. Input image 1 is STYLE REFERENCE ONLY. Generate ONE yellow golden wooden wedge ramp matching middle prop card in reference. Ramp has low left end and high right end, planked sloping surface, solid triangular right-side face, small dark metal bolts. Simple near side-on shallow depth view clearly rising from left to right, horizontal flat base. Polished thick dark navy ink contours, vivid yellow ochre material, warm cream highlights and subtle brush grain, same charming comic style. Center complete ramp on truly transparent background with comfortable transparent margin. No text, extra objects, background, UI, cyan glow, shadow outside object or checkerboard.",
+      "generated_source": "C:\\Users\\rv941\\.codex\\generated_images\\01a109e5-c4d5-7123-b485-f11450bcde8e\\exec-4cf513f7-4f61-4b5f-9861-4ad1c6b67192.png",
+      "original": "E:/hypercasual game/assets/art/originals/prop_ramp.png",
+      "output": "E:/hypercasual game/assets/art/prop_ramp.png"
+    },
+    {
+      "name": "prop_spring",
+      "prompt": "Use case: stylized-concept. Asset type: isolated transparent 2D game sprite for Freeze Frame. Input image 1 STYLE REFERENCE ONLY. Generate exactly one mint green round spring bounce pad, matching lower right prop card: broad flat circular green top with slightly elliptical shallow perspective, one dark navy compression coil exposed below, sturdy mint green rounded square base with four dark bolts. Clean readable full silhouette, squat device, near side-on shallow depth. Polished vivid 2D hand ink illustration with thick navy contour, green highlights and restrained brush texture. Center complete object with comfortable transparent margin on truly transparent background. No text, other objects, floor, cast shadow, UI, cyan glow or checkerboard.",
+      "generated_source": "C:\\Users\\rv941\\.codex\\generated_images\\01a109e5-c4d5-7123-b485-f11450bcde8e\\exec-e09cb546-fe22-4c95-a1e6-d59de302bde1.png",
+      "original": "E:/hypercasual game/assets/art/originals/prop_spring.png",
+      "output": "E:/hypercasual game/assets/art/prop_spring.png"
+    },
+    {
+      "name": "hazard_crate",
+      "prompt": "Use case: stylized-concept. Asset type: transparent 2D hazard sprite for Freeze Frame game. Input image 1 is STYLE REFERENCE ONLY. Generate ONE wooden shipping parcel crate matching the suspended crate above courier: warm orange honey wood planks, thick strong navy ink outline, nail heads and reinforcing edge slats, a single small cream shipping sticker with two simple navy upward arrows. Three-quarter shallow depth with front broad square face and visible bottom and narrow side, slightly tilted so it feels falling. Polished vivid hand-ink cartoon illustration with restrained grain and highlights. Center entire isolated crate with comfortable transparent margin. Truly transparent background. No cyan glow, aura, splinters, fragments, motion lines, text, environment, shadow, UI, or other objects. No checkerboard.",
+      "generated_source": "C:\\Users\\rv941\\.codex\\generated_images\\01a109e5-c4d5-7123-b485-f11450bcde8e\\exec-7a0dc281-241b-489d-8d6e-2d23695297ce.png",
+      "original": "E:/hypercasual game/assets/art/originals/hazard_crate.png",
+      "output": "E:/hypercasual game/assets/art/hazard_crate.png"
+    },
+    {
+      "name": "hazard_barrel",
+      "prompt": "Use case: stylized-concept. Asset type: isolated transparent 2D rolling hazard sprite for Freeze Frame. Input image 1 STYLE REFERENCE ONLY for thick navy ink contours, warm wood, polished comic shading and slight brush texture. Generate ONE squat wooden barrel lying on its side, circular front end clearly visible and cylindrical side shallow depth trailing to right. Honey orange wooden staves held by two broad dark navy blue steel hoops, small rivets, no logos. Near side-on shallow perspective, clearly readable barrel silhouette usable for a rolling game hazard. Center full object with comfortable transparent margin. Truly transparent background, no ground, external shadow, motion effects, debris, cyan glow, text, UI, or additional objects, no checkerboard.",
+      "generated_source": "C:\\Users\\rv941\\.codex\\generated_images\\01a109e5-c4d5-7123-b485-f11450bcde8e\\exec-aab48fda-6693-41aa-b1f8-4168b43a41c4.png",
+      "original": "E:/hypercasual game/assets/art/originals/hazard_barrel.png",
+      "output": "E:/hypercasual game/assets/art/hazard_barrel.png"
+    },
+    {
+      "name": "hazard_trolley",
+      "prompt": "Use case: stylized-concept. Asset type: isolated transparent 2D rolling hazard sprite for Freeze Frame. Input image 1 STYLE REFERENCE ONLY. Generate ONE compact navy blue metal hand trolley carrying two warm golden cardboard parcels, same trolley style visible at lower left reference. Tall curved handle, two rubber wheels at bottom, two stacked taped cardboard boxes with tiny cream shipping label shapes no writing. Near side-on shallow depth, trolley slightly tilted backward but wheels aligned horizontally, entire coherent object centered with comfortable transparent margins. Polished vivid hand ink cartoon illustration thick crisp navy outlines, warm cream highlights and restrained brush texture. Truly transparent background. No scene, person, ground, external shadow, UI, motion lines, cyan glow, text, logos, extra objects or checkerboard.",
+      "generated_source": "C:\\Users\\rv941\\.codex\\generated_images\\01a109e5-c4d5-7123-b485-f11450bcde8e\\exec-40be5bbc-743b-43f5-bb32-25364f242f16.png",
+      "original": "E:/hypercasual game/assets/art/originals/hazard_trolley.png",
+      "output": "E:/hypercasual game/assets/art/hazard_trolley.png"
+    }
+  ]
+}

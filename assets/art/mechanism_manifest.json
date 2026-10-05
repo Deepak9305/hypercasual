@@ -1,0 +1,21 @@
+{
+  "mode": "built-in image_gen",
+  "reference": "C:/Users/rv941/AppData/Local/Temp/codex-clipboard-ae246a63-7959-4c89-a020-d7182da615a3.png",
+  "processing": "Trimmed to visible alpha bounds above1/255 to remove negligible generated halo; resized with Lanczos to maximum640 pixels; RGBA preserved; originals retained.",
+  "assets": [
+    {
+      "name": "stage_gap",
+      "prompt": "Use case: stylized-concept. Asset type: isolated transparent mobile cartoon gameplay scenery sprite. Image 1 is STYLE REFERENCE ONLY: match its rich warm handpainted texture, dark navy ink contour, sunny ochre cream stone and cartoon clarity. Generate ONE rectangular hole in a courtyard stone floor, shallow perspective like a side-on 2D puzzle game, width-to-height about 2.5. Rough thick cream sandstone paving lip around the complete rectangular rim; deep empty dark navy depth within, subtle navy-black inner walls, no visible bottom. Entire hole including rim isolated as one cohesive sprite on genuine transparent alpha background. Centered full object with transparent margins. No surrounding large floor field, no people, courier, objects, wooden boards, ladder, scenery, UI, glow, lettering, watermark or border. Readable simple rectangular opening with irregular handpainted stone lip.",
+      "source": "C:/Users/rv941/.codex/generated_images/01a109e5-686f-7df0-852b-0f8c841ee6f5/exec-99725101-5b74-4c25-9d5d-99ee7c9e06c4.png",
+      "output": "E:/hypercasual game/assets/art/stage_gap.png",
+      "inspection": "Full cohesive isolated object, dark navy contours, warm handpainted illustration matching selected reference, genuine transparent RGBA background."
+    },
+    {
+      "name": "moving_platform",
+      "prompt": "Use case: stylized-concept. Asset type: individual transparent mobile 2D game mechanism sprite. Image 1 is STYLE REFERENCE ONLY: match warm vivid handpainted cartoon artwork, confident navy ink outlines, tactile rich brush texture. Create ONE wide thin honey-gold wooden lift platform, about 4:1 width-to-height. Side-on shallow perspective showing a narrow top face of golden wooden planks and a sturdy dark steel metal edge strip with a few bolts. It is a standalone horizontal rectangular moving platform deck, not a vehicle, no mechanism tower, no wheels, no rails, no supports. Entire full object centered with genuine transparent alpha background and transparent margin, no external shadows. Clear game-ready silhouette, cheerful warm sunlight highlights, thick navy outer contours. No character, objects on platform, floor, scenery, text, UI, buttons, watermark, border or glow.",
+      "source": "C:/Users/rv941/.codex/generated_images/01a109e5-686f-7df0-852b-0f8c841ee6f5/exec-f379f832-78b4-44c4-87bc-c65f4c84574c.png",
+      "output": "E:/hypercasual game/assets/art/moving_platform.png",
+      "inspection": "Full cohesive isolated object, dark navy contours, warm handpainted illustration matching selected reference, genuine transparent RGBA background."
+    }
+  ]
+}

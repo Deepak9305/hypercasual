@@ -1,0 +1,23 @@
+{
+  "tool": "built-in image_gen",
+  "transparent_background": true,
+  "reference": "C:/Users/rv941/AppData/Local/Temp/codex-clipboard-ae246a63-7959-4c89-a020-d7182da615a3.png",
+  "source": "C:/Users/rv941/.codex/generated_images/01a109e5-918f-7c81-9441-e3163462f93f/exec-299bf913-3ff8-4ffc-8224-ed988fb6e5c6.png",
+  "output": "E:/hypercasual game/assets/art/logo.png",
+  "prompt": "Use case: logo-brand. Asset type: transparent raster illustrated game title logo. Reference image is exact logo STYLE reference from the top left of selected Freeze Frame screenshot. Generate ONLY the two-line wordmark reading EXACTLY 'FREEZE' on the first line, 'FRAME' on the second line, spelled F R E E Z E and F R A M E. Match reference chunky playful hand-drawn uppercase cartoon block lettering, slightly tilted upward, tightly stacked, luminous cyan/aqua FREEZE and warm golden-yellow FRAME. Thick dark navy outer contour, subtle chunky offset navy shadow, subtle lighter top face highlights for tactile depth. Add only two small white/navy comic motion ticks at side if appropriate. Composition single logo centered, fully visible with transparent margin, no surrounding scene. TRUE TRANSPARENT alpha background, no cream panel, no button, no phone frame, no characters, no objects, no extra words, no watermark. Professional crisp readable title artwork.",
+  "processing": "Alpha trim at threshold 8/255 with 3px padding; proportional downsample to maximum width 900. Source retained.",
+  "original_size": [
+    1774,
+    887
+  ],
+  "alpha_bounds": [
+    75,
+    74,
+    1724,
+    859
+  ],
+  "final_size": [
+    900,
+    428
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "mode": "built-in image_gen",
+  "reference": "C:/Users/rv941/AppData/Local/Temp/codex-clipboard-ae246a63-7959-4c89-a020-d7182da615a3.png",
+  "assets": [
+    {
+      "name": "courtyard",
+      "prompt": "Use case: stylized-concept. Asset type: final clean mobile game background plate, portrait 780x1100 logical composition. Input image 1 is STYLE REFERENCE ONLY, not an edit target. Generate a new empty courtyard background matching the attached Freeze Frame reference: warm sunny terracotta/orange stucco walls, richly handpainted brush textures, confident dark navy cartoon outlines, blue sky, cream stone paving, peripheral potted plants, Mediterranean architectural charm. Camera straight-on side-view suitable for a 2D physics game. Flat horizontal gameplay ground at exactly 85 percent image height, paving below that line. Mint green open exit doorway at far right, its threshold on the ground line; small inherent sign may say EXIT. Keep the central 70 percent region empty and low contrast for movable gameplay sprites; leave open wall and sky above for hazards. Decorative lamps, timber beams, architecture at side edges only. Studio-quality playful cartoon illustration, warm golden sunlight, coherent perspective. Absolutely NO people, courier, character, falling crate, barrels, gameplay objects, umbrellas, ramps, spring pads, motion effects, frozen-time glow, UI, buttons, logo, title, captions, borders or watermark. Background artwork only. Preserve reference palette and drawing aesthetic without copying its gameplay or interface.",
+      "source": "C:/Users/rv941/.codex/generated_images/01a109e5-686f-7df0-852b-0f8c841ee6f5/exec-aac62409-b785-47e3-9f21-c4a9b1430c82.png",
+      "output": "E:/hypercasual game/assets/art/background_courtyard.png",
+      "inspection": "Clean empty background plate matching reference style. No characters/gameplay/UI. Mint exit doorway right. Original preserved.",
+      "ground_threshold_fraction": 0.72
+    },
+    {
+      "name": "workshop",
+      "prompt": "Use case: stylized-concept. Asset type: final clean mobile 2D game background plate, portrait 780x1100 logical composition. Input image 1 is STYLE REFERENCE ONLY. Generate an empty sunny industrial workshop courtyard in the exact cartoon illustration aesthetic of the reference: warm orange and golden stucco walls, handpainted brush texture, confident navy outlines, playful Mediterranean architecture, blue sky peeking above, warm cream paving. Side-on straight camera, no top-down perspective. Flat horizontal floor across entire width at 85 percent of image height, lower 15 percent paving. Mint green open exit doorway at far right with threshold on that line and a small EXIT sign. Workshop decorative shelves, hanging spanners, pulley brackets and timber beams ONLY along extreme side edges, not obstacles. Central 70 percent of picture stays completely clear and quiet orange wall with low contrast for game sprites, upper center open clear space for hazards. Warm studio-quality game art, consistent sunlight, lightly worn rich tactile materials. NO characters, people, crates, cargo, barrels, mobile props, moving objects, hazards, umbrella, ramp, spring pad, UI, logo, buttons, text other than EXIT, borders, motion lines, glow, watermark. Independent background artwork only.",
+      "source": "C:/Users/rv941/.codex/generated_images/01a109e5-686f-7df0-852b-0f8c841ee6f5/exec-9bd21bed-a74c-4151-9c2a-b1e69f185bdb.png",
+      "output": "E:/hypercasual game/assets/art/background_workshop.png",
+      "inspection": "Clean empty background plate matching reference style. No characters/gameplay/UI. Mint exit doorway right. Original preserved.",
+      "ground_threshold_fraction": 0.75
+    },
+    {
+      "name": "rooftop",
+      "prompt": "Use case: stylized-concept. Asset type: final clean mobile 2D game background plate, portrait 780x1100 logical composition. Input image 1 is STYLE REFERENCE ONLY. Generate an empty sunny rooftop in the same warm handpainted cartoon aesthetic as reference: vivid blue sky occupying upper half, distant Mediterranean orange and terracotta city roofs, confident dark navy linework, tactile brush textures, cream foreground rooftop paving. Straight side-on game camera, level horizontal foreground platform floor line at 80 percent image height, 20 percent paving below. A small warm orange rooftop access tower sits at far right with a mint green open door, its threshold aligns with platform floor line; inherent small EXIT sign over doorway. Left and right periphery may contain low parapet walls and one decorative plant; middle 70 percent is completely clear empty play space against quiet distant rooftop silhouettes and sky, low contrast for sprites. Golden daylight, cheerful studio-quality illustrated art. NO people, courier, characters, cranes, crates, barrels, mobile props, hazards, umbrellas, ramps, spring pads, UI, logo, title, buttons, text except EXIT, borders, glow, motion lines or watermark. One standalone background plate only, consistent reference palette and artistic treatment.",
+      "source": "C:/Users/rv941/.codex/generated_images/01a109e5-686f-7df0-852b-0f8c841ee6f5/exec-c05071c0-5ed0-41cb-9f9c-42e183b2fbc0.png",
+      "output": "E:/hypercasual game/assets/art/background_rooftop.png",
+      "inspection": "Clean empty background plate matching reference style. No characters/gameplay/UI. Mint exit doorway right. Original preserved.",
+      "ground_threshold_fraction": 0.74
+    }
+  ]
+}
