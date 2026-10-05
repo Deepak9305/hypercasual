@@ -30,14 +30,22 @@ This is an image-guided playable native game, rather than a literal static clone
 
 ## Interaction verification
 
-16 rendered assertions passed using native viewport pointer input: title Play, Start, automatic freeze, inventory drag/placement, Resume, physical rescue, result opening, Next Delivery, incorrect-placement failure, retry, pause, sound toggle, continue, locked levels and completed-level replay. The additional physics/state suite passed 175 assertions across all 12 authored solutions, invalid placements, freeze continuity, deterministic retries, touch, backgrounding/Back and saved progress.
+29 rendered assertions passed using native viewport pointer input: title Play, Start, automatic freeze, inventory drag/placement, Resume, physical rescue, result opening, Next Delivery, incorrect-placement failure, retry, pause, sound toggle, continue, locked levels and completed-level replay, plus manual freeze cues and rendered rescues for revised levels 4, 7, and 11. The additional physics/state suite passed 196 assertions across all 12 authored solutions, invalid placements, freeze continuity, deterministic retries, touch, backgrounding/Back saved progress, delayed-result/pause behavior, toast cleanup, audio release, and nearby placements in revised puzzles.
 
-No script exception occurred in the rendered flow. Windows falls back to ANGLE because the installed driver does not advertise desktop OpenGL 3.3. A small resource-retention warning can occur on test-process shutdown and is recorded for follow-up; it did not change the assertion results.
+No script exception occurred in the rendered flow. The current run uses Linux Mesa software OpenGL at approximately 60 FPS on the title scene. The original Windows ANGLE measurement remains historical evidence. Verbose shutdown identified ambient WAV playback as the retained resource; explicit audio teardown now produces clean exits in both suites, including the game exit flow with music enabled.
+
+## Version 0.2.0 visual checks
+
+- Preserved all original raster assets and the exact selected reference. Animation uses existing poses with speed-linked stride, airborne lean/stretch, landing squash, and a celebration hop. No new generated artwork was needed.
+- The courier pose remains stationary during freeze/placement and pause. Collision shapes and pointer coordinates remain independent from sprite animation.
+- Impact callouts use the licensed Bangers font, navy outline, and gold fill above scene sprites and below dialogs. Manual FREEZE NOW text uses the existing status area.
+- Fresh `branch_office.png`, `art_attack.png`, and `rolling_chain.png` show revised spring/spring/ramp solutions. `courier_jump.png` and `ramp_feedback.png` capture the actual rendered jump and redirection feedback. Original UI-flow screenshots are refreshed by the same suite.
+- Level 4 teaches spring use against a sliding branch before the later gap. Level 7 combines a sculpture and delayed trolley; level 11 combines staggered rolling hazards with one ramp. All twelve puzzles retain authored solutions and legal failing controls.
 
 ## Remaining polish and test limits
 
-- P3: Additional courier animation frames and stronger scene-specific incidental motion would improve the illustration's liveliness.
-- P3: More distinctive solutions in later shield levels would improve puzzle variety.
+- P3: Dedicated illustrated animation frames could further improve the stride; current motion transforms the existing poses.
+- P3: Difficulty and the faster courier in level 7 need player sessions, beyond solution and placement-tolerance tests.
 - Physical Android installation, cutouts, haptics, audio focus and sustained frame rate remain untested because no device/emulator is connected.
 - Retention, difficulty and share appeal have not been measured with players.
 

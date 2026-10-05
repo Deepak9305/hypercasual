@@ -23,13 +23,18 @@ var instruction: Label
 var primary: Button
 var prop_cards: Dictionary = {}
 var attempts: int = 1
-var banner: Label
 var outcome_pending: bool = false
 var capture_mode: bool = false
-var attempt_generation: int = 0
+var outcome_timer: Timer
+var toast_panel: Panel
+var quitting: bool = false
 
 func _ready() -> void:
 	get_tree().auto_accept_quit = false
+	outcome_timer = Timer.new()
+	outcome_timer.one_shot = true
+	outcome_timer.timeout.connect(finish_outcome)
+	add_child(outcome_timer)
 	title_font = load("res://assets/fonts/Bangers-Regular.ttf")
 	ui_font = load("res://assets/fonts/LilitaOne-Regular.ttf")
 	content = Control.new()
@@ -72,12 +77,14 @@ func layout_content() -> void:
 	content.position = usable.position + (usable.size - Vector2(780, 1688) * fit) * 0.5
 
 func clear_ui() -> void:
+	outcome_timer.stop()
+	outcome_pending = false
 	for child in ui_layer.get_children():
 		ui_layer.remove_child(child)
 		child.queue_free()
 	prop_cards.clear()
 	overlay = null
-	banner = null
+	toast_panel = null
 	dragging = false
 	world.hide_ghost()
 
@@ -218,7 +225,6 @@ func show_levels() -> void:
 	label("Completed puzzles are always yours to replay.", Rect2(40, 1550, 700, 65), 26, Color("52606e"))
 
 func begin_level(index: int, retry: bool = false) -> void:
-	attempt_generation += 1
 	current_level = clampi(index, 0, 11)
 	screen = "game"
 	if not retry:
@@ -264,7 +270,7 @@ func update_game_ui() -> void:
 		RescueWorld.State.RUNNING:
 			primary.text = "FREEZE"
 			instruction.text = "Tap FREEZE before trouble arrives!"
-			state_label.text = "TIME IS MOVING"
+			state_label.text = "FREEZE NOW!" if world.freeze_cue_shown else "TIME IS MOVING"
 		RescueWorld.State.FROZEN, RescueWorld.State.PLACEMENT:
 			primary.text = "RESUME"
 			instruction.text = "Drag one object into the scene." if world.prop == null else "Move one object. Change what happens."
@@ -324,26 +330,29 @@ func show_hint() -> void:
 	hint_step += 1
 
 func toast(text: String) -> void:
-	if is_instance_valid(banner):
-		banner.queue_free()
+	if is_instance_valid(toast_panel):
+		ui_layer.remove_child(toast_panel)
+		toast_panel.queue_free()
 	var parent = Panel.new()
 	parent.position = Vector2(32, 1060)
 	parent.size = Vector2(716, 95)
 	parent.add_theme_stylebox_override("panel", box(CREAM, 22, INK, 3))
 	parent.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	ui_layer.add_child(parent)
-	banner = label(text, Rect2(15, 8, 686, 79), 27, INK, parent)
+	toast_panel = parent
+	var banner = label(text, Rect2(15, 8, 686, 79), 27, INK, parent)
 	banner.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	var timer = get_tree().create_timer(4.5)
-	timer.timeout.connect(func():
-		if is_instance_valid(parent):
-			parent.queue_free())
+	var timer = Timer.new()
+	timer.one_shot = true
+	parent.add_child(timer)
+	timer.timeout.connect(parent.queue_free)
+	timer.start(4.5)
 
 func local_pointer(event: InputEvent) -> Vector2:
 	return (event.position - content.position) / content.scale
 
 func _input(event: InputEvent) -> void:
-	if screen != "game" or overlay != null:
+	if quitting or screen != "game" or overlay != null:
 		return
 	if event is InputEventKey and event.pressed and not event.echo:
 		if event.keycode == KEY_SPACE:
@@ -441,19 +450,37 @@ func on_rescued() -> void:
 	if outcome_pending:
 		return
 	outcome_pending = true
-	var generation = attempt_generation
-	await get_tree().create_timer(0.65).timeout
-	if generation == attempt_generation and screen == "game" and world.state == RescueWorld.State.SUCCESS:
-		show_result(true, "")
+	outcome_timer.start(0.65)
 
 func on_failed(reason: String) -> void:
 	if outcome_pending:
 		return
 	outcome_pending = true
-	var generation = attempt_generation
-	await get_tree().create_timer(0.55).timeout
-	if generation == attempt_generation and screen == "game" and world.state == RescueWorld.State.FAILURE:
-		show_result(false, reason)
+	outcome_timer.set_meta("reason", reason)
+	outcome_timer.start(0.55)
+
+func finish_outcome() -> void:
+	if screen != "game" or not outcome_pending:
+		return
+	if overlay != null or world.paused:
+		outcome_timer.start(0.1)
+		return
+	if world.state == RescueWorld.State.SUCCESS:
+		show_result(true, "")
+	elif world.state == RescueWorld.State.FAILURE:
+		show_result(false, outcome_timer.get_meta("reason", "New plan?"))
+
+func quit_game() -> void:
+	if quitting:
+		return
+	quitting = true
+	world.paused = true
+	outcome_timer.stop()
+	SaveData.save_progress()
+	Sound.shutdown()
+	# Give the audio mixing thread time to release its playback references.
+	await get_tree().create_timer(0.1).timeout
+	get_tree().quit()
 
 func show_result(success: bool, reason: String) -> void:
 	if overlay:
@@ -488,10 +515,9 @@ func _notification(what: int) -> void:
 		elif screen != "title":
 			show_title()
 		else:
-			get_tree().quit()
+			quit_game()
 	elif what == NOTIFICATION_WM_CLOSE_REQUEST:
-		SaveData.save_progress()
-		get_tree().quit()
+		quit_game()
 
 func capture_screens() -> void:
 	await get_tree().process_frame
@@ -511,5 +537,4 @@ func capture_screens() -> void:
 	await RenderingServer.frame_post_draw
 	get_viewport().get_texture().get_image().save_png("res://build/levels.png")
 	print("CAPTURE_COMPLETE")
-	get_tree().quit()
-
+	quit_game()

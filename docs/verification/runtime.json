@@ -1,0 +1,71 @@
+{
+  "date": "2026-10-05",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "host": "Linux x86_64 / Debian 13",
+  "renderer": "Compatibility / Mesa llvmpipe OpenGL 4.5",
+  "physics": {
+    "checks": 196,
+    "failures": 0,
+    "exit_status": 0
+  },
+  "rendered": {
+    "checks": 29,
+    "failures": 0,
+    "exit_status": 0,
+    "fps_title_scene": 60.0062406490275
+  },
+  "shutdown": {
+    "ambient_playback_leak_reproduced_in_baseline": true,
+    "physics_exit_clean": true,
+    "rendered_game_exit_clean": true
+  },
+  "android": {
+    "device_tested": false,
+    "adb_targets": [],
+    "emulator_installed": false,
+    "kvm_available": false,
+    "export_passed": true,
+    "signature_v2_v3_verified": true,
+    "alignment_16kb_verified": true,
+    "package": "com.freezeframe.rescue",
+    "version_name": "0.2.0",
+    "version_code": 2,
+    "min_api": 24,
+    "target_api": 36,
+    "architectures": [
+      "arm64-v8a"
+    ],
+    "permissions": [
+      "android.permission.VIBRATE"
+    ],
+    "sdk_build_tools": "36.0.0",
+    "jdk_major": 21,
+    "sha256": "f0e0f03b69f570462bbc8072ca350faf8a2470cf2d0d9337d87ae48099560f37",
+    "debug_signer_changed": true
+  },
+  "reference_sha256": "caf65c7cc78db7ea45050e1476e1d05b6f83724f4769fbac4d4de75cee5f5757",
+  "source_sha256": {
+    "export_presets.cfg": "c75eb046264dfe941e79b63728c898657451c3333a31ff40e7f3f844d45e7f89",
+    "project.godot": "c50c966ee3ae0bc846125b56d909797ed10fe218cb7aadb238096ba62a7fdea9",
+    "scripts/actor.gd": "9610bf71e031bdd11f4cb6fea5d3bb3c603973785dad45094ec07cf7204f3559",
+    "scripts/level_definition.gd": "a4c608bb0c3248ca8ce33779f2bb748b1e8c0076da76c229c914f1279458acfa",
+    "scripts/levels.gd": "ea288943df00f1d13246bdd2ee4805646d43303c0de4bed1c29ac63eef91d0c8",
+    "scripts/main.gd": "6eb7cfd5aa8601c73ba2a39ab30ad6178e2a13bd47ae6b3d0e6f050182d8623c",
+    "scripts/save_data.gd": "8a727aaebf2c28930e12cb046193803e885c078829fbf5dc5a78715fdf3da51c",
+    "scripts/sound.gd": "1ce6c2145ae20db444cf1b0a7ee47541dbd23272fe2b99054cc66b49098efd42",
+    "scripts/world.gd": "3970caf5080a57980e56f2b6023572af777234fc42b3c38f82f506fd6ca88977",
+    "tests/suite.gd": "d95b2ba3f0f6695a7bc3bcef62861b85ac62f1c35c7964a76c6274632d08e262",
+    "tests/visual_suite.gd": "1aec6fd30b194b5a59f316777b698afa3c46e7aa24b3dc8f5c2122ad6d9733f8"
+  },
+  "commands": [
+    "godot --headless --editor --path . --import",
+    "godot --headless --verbose --path . --scene tests/runner.tscn --fixed-fps 60 -- --test",
+    "godot --verbose --path . --resolution 390x844 --audio-driver Dummy --max-fps 60 --scene tests/visual_runner.tscn -- --test",
+    "godot --headless --path . --export-debug Android build/FreezeFrame-debug.apk",
+    "apksigner verify --verbose --print-certs build/FreezeFrame-debug.apk",
+    "zipalign -c -P 16 -v 4 build/FreezeFrame-debug.apk",
+    "aapt dump badging build/FreezeFrame-debug.apk",
+    "aapt dump permissions build/FreezeFrame-debug.apk",
+    "adb devices -l"
+  ]
+}

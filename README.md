@@ -16,11 +16,11 @@ A native portrait Android rescue puzzle game. Freeze a disaster, move one object
 
 Start the scene, then freeze before the hazard reaches the courier. Levels 1–2 freeze automatically. Drag a prop card into the scene, or select a card and place it with a click. Umbrellas can be placed overhead; ramps and springs snap to the floor. An outlined ghost previews placement. Overlaps are rejected and preserve the last placed prop. You may replace your chosen object before resuming; only one prop is active per attempt.
 
-Resume lets the physical scene continue from its frozen velocities. A rescue unlocks the next level. Hints first explain the danger, then reveal the authored solution location. Failed attempts can be retried immediately. Progress and audio/haptic settings are stored locally in Godot's app data folder. There are no accounts, ads, network permissions, or gameplay servers.
+Resume lets the physical scene continue from its frozen velocities. A rescue unlocks the next level. Hints first explain the danger, then reveal the authored solution location. Failed attempts can be retried immediately. A FREEZE NOW cue helps with manual timing after the two tutorial levels. Chapters introduce umbrella, ramp, and spring solutions before combining stationary obstacles, staggered hazards, wind, and moving platforms. The courier has speed-linked stride motion, airborne lean, landing squash, and a celebration hop; short BONK / WHOOSH / BOING callouts explain successful physical interactions. Progress and audio/haptic settings are stored locally in Godot's app data folder. There are no accounts, ads, network permissions, or gameplay servers.
 
 ## Develop and build
 
-Use Godot 4.7.2 with GDScript and the Compatibility renderer. This machine already has Android templates, the SDK and OpenJDK 17 configured in Godot's editor settings. On another machine, install matching export templates and configure Java SDK / Android SDK paths under Editor Settings > Export > Android. Update the debug keystore path in `export_presets.cfg` to your local Godot debug keystore.
+Use Godot 4.7.2 with GDScript and the Compatibility renderer. Android export needs matching templates, the SDK, and OpenJDK 17 or later. On another machine, install matching export templates and configure Java SDK / Android SDK paths under Editor Settings > Export > Android. The Android preset uses your locally configured Godot debug keystore; no machine-specific key path is committed.
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\Test.ps1
@@ -28,7 +28,18 @@ powershell -ExecutionPolicy Bypass -File .\Test.ps1 -Visual
 powershell -ExecutionPolicy Bypass -File .\Build-Android.ps1
 ```
 
-The standard Godot Android export template supplies minimum API 24 and target API 36. The APK package is `com.freezeframe.rescue`, version `0.1.0`. Release signing and store publication are separate from this debug build.
+Linux / cloud commands (Godot 4.7.2 must be on PATH):
+
+```bash
+godot --headless --editor --path . --import
+godot --headless --path . --scene tests/runner.tscn --fixed-fps 60 -- --test
+godot --path . --resolution 390x844 --audio-driver Dummy --max-fps 60 --scene tests/visual_runner.tscn -- --test
+godot --headless --path . --export-debug Android build/FreezeFrame-debug.apk
+```
+
+Rendered tests need an X11 display. Cloud startup instructions activate the matching engine, writable app/cache directories, SDK, and a dummy Xorg display. Android export was verified with API 36 build tools, matching Godot templates, and OpenJDK 21. No Gradle build is needed for this project.
+
+The standard Godot Android export template supplies minimum API 24 and target API 36. The APK package is `com.freezeframe.rescue`, version `0.2.0` (version code 2). Release signing and store publication are separate from this debug build. The rebuilt APK uses a different local debug certificate from the original Windows build. Android will reject an in-place update signed with the old key: back up any progress you need before uninstalling the old debug app and installing this one. No signing key is committed.
 
 ## Project layout
 
@@ -44,9 +55,9 @@ The standard Godot Android export template supplies minimum API 24 and target AP
 
 All 12 authored solutions and incorrect-placement cases are exercised through Godot's physics engine. Rendered tests click actual native UI controls, drag a prop, complete a rescue, exercise failure/retry, pause/settings and replay. See `build/test_results.json`, `build/visual_test_results.json`, and `design-qa.md` for final results and evidence.
 
-The latest verified reports are also committed under `docs/verification`: 175 physics/state assertions and 16 rendered interface assertions passed. Desktop rendering measured approximately 60 FPS at a 390×844 window / 780×1688 logical viewport. The rendered test may report a small resource-retention warning at process shutdown; this is recorded for follow-up in `HANDOFF.md`.
+The latest verified reports are committed under `docs/verification`: 196 physics/state assertions and 29 rendered interface assertions passed on Godot 4.7.2. Desktop rendering measured approximately 60 FPS on Linux with Mesa software OpenGL at a 390×844 window / 780×1688 logical viewport. Both suites exit without leaked-object or retained-resource warnings, including the real game exit path with music enabled.
 
-The desktop Compatibility/ANGLE renderer is measured separately from Android. No Android device or emulator is connected; installation, real-device safe areas, haptics, audio focus, battery use and Android frame rate remain unverified. This is a playable first build; retention, level difficulty and viral appeal need player testing.
+Desktop Compatibility rendering is measured separately from Android. No Android device or emulator is connected; installation, real-device safe areas, haptics, audio focus, battery use and Android frame rate remain unverified. This is a playable debug build; retention, level difficulty and viral appeal need player testing.
 
 ## Assets and licenses
 

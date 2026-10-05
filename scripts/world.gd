@@ -34,6 +34,15 @@ var ghost_sprite: Sprite2D
 var particles: Array[Dictionary] = []
 var background: TextureRect
 var art_cache: Dictionary = {}
+var courier_base_scale: Vector2
+var gait_phase: float = 0.0
+var landing_pulse: float = 0.0
+var celebration_time: float = 0.0
+var impact_text: String = ""
+var impact_position: Vector2 = Vector2.ZERO
+var impact_life: float = 0.0
+var freeze_cue_shown: bool = false
+var impact_label: Label
 
 func _ready() -> void:
 	background = TextureRect.new()
@@ -49,6 +58,18 @@ func _ready() -> void:
 	ghost_sprite.z_index = 20
 	ghost_sprite.visible = false
 	add_child(ghost_sprite)
+	impact_label = Label.new()
+	impact_label.size = Vector2(280, 60)
+	impact_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	impact_label.add_theme_font_override("font", load("res://assets/fonts/Bangers-Regular.ttf"))
+	impact_label.add_theme_font_size_override("font_size", 36)
+	impact_label.add_theme_color_override("font_color", Color("ffbe40"))
+	impact_label.add_theme_color_override("font_outline_color", Color("101d3c"))
+	impact_label.add_theme_constant_override("outline_size", 7)
+	impact_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	impact_label.z_index = 30
+	impact_label.visible = false
+	add_child(impact_label)
 
 func texture(path: String) -> Texture2D:
 	if not art_cache.has(path):
@@ -67,10 +88,19 @@ func reset(level: LevelDefinition, index: int) -> void:
 	ghost_kind = ""
 	ghost_sprite.visible = false
 	particles.clear()
+	gait_phase = 0.0
+	landing_pulse = 0.0
+	celebration_time = 0.0
+	impact_text = ""
+	impact_life = 0.0
+	impact_label.visible = false
+	freeze_pulse = 0.0
+	background.position = Vector2.ZERO
 	definition = level
 	level_index = index
 	sim_time = 0.0
 	freeze_used = false
+	freeze_cue_shown = false
 	spring_used = false
 	paused = false
 	hint_marker = false
@@ -123,6 +153,7 @@ func reset(level: LevelDefinition, index: int) -> void:
 	courier_sprite.texture = texture("res://assets/art/courier_walk.png")
 	if courier_sprite.texture:
 		courier_sprite.scale = Vector2(250, 335) / courier_sprite.texture.get_size()
+	courier_base_scale = courier_sprite.scale
 	courier_sprite.position = Vector2(0, -159)
 	courier.z_index = 12
 	courier.add_child(courier_sprite)
@@ -251,6 +282,9 @@ func _physics_process(delta: float) -> void:
 	if state == State.RUNNING and level_index < 2 and sim_time >= definition.freeze_at:
 		freeze()
 		return
+	if state == State.RUNNING and not freeze_cue_shown and sim_time >= definition.freeze_at:
+		freeze_cue_shown = true
+		state_changed.emit()
 	if platform:
 		platform.position.y = 1060 + sin(sim_time * 2.2) * 42
 	for actor in actors:
@@ -269,6 +303,7 @@ func _physics_process(delta: float) -> void:
 					emit_sparkles(actor.position, Color("ffc44d"), 10)
 					Sound.play("bounce", -12)
 					freeze_pulse = 0.16
+					show_impact("WHOOSH!" if tag == "ramp" else "BONK!", actor.position - Vector2(0, 70))
 				elif not actor.deflected:
 					actor.velocity.y = 0.0
 					if actor.motion != "roll":
@@ -282,12 +317,17 @@ func _physics_process(delta: float) -> void:
 		spring_used = true
 		courier_grounded = false
 		emit_sparkles(prop_position, Color("00eceb"), 14)
+		show_impact("BOING!", prop_position + Vector2(90, -160))
 		Sound.play("bounce")
 		Sound.haptic(30)
 	courier.velocity.x = definition.courier_speed
 	courier.velocity.y += 800 * delta
+	var was_grounded = courier_grounded
 	courier.move_and_slide()
 	courier_grounded = courier.is_on_floor()
+	if courier_grounded and not was_grounded and spring_used:
+		landing_pulse = 1.0
+		emit_sparkles(courier.position, Color("ffc44d"), 6)
 	for collision_index in range(courier.get_slide_collision_count()):
 		var body = courier.get_slide_collision(collision_index).get_collider()
 		if body is GameActor and not body.deflected:
@@ -322,10 +362,48 @@ func emit_sparkles(at: Vector2, color: Color, count: int) -> void:
 		var angle = float(i) / count * TAU
 		particles.append({"position": at, "velocity": Vector2(cos(angle), sin(angle)) * (100 + i % 5 * 35), "life": 1.0, "color": color})
 
+func show_impact(text_: String, at: Vector2) -> void:
+	impact_text = text_
+	impact_label.text = text_
+	impact_position = at
+	impact_life = 0.7
+
+func animate_courier(delta: float) -> void:
+	if not courier_sprite:
+		return
+	if state in [State.FROZEN, State.PLACEMENT]:
+		# Frozen body and pose remain completely still; only the time rings move.
+		return
+	if state in [State.RUNNING, State.RESUMED]:
+		gait_phase += delta * definition.courier_speed * 0.16
+		landing_pulse = maxf(0.0, landing_pulse - delta * 5.0)
+		if courier_grounded:
+			var stride = sin(gait_phase)
+			courier_sprite.position.y = -159 - absf(stride) * 8
+			courier_sprite.rotation = stride * 0.035
+			courier_sprite.scale = courier_base_scale * Vector2(1.0 + landing_pulse * 0.12 - absf(stride) * 0.025, 1.0 - landing_pulse * 0.12 + absf(stride) * 0.025)
+		else:
+			courier_sprite.position.y = -164
+			courier_sprite.rotation = clampf(courier.velocity.y / 3000.0, -0.16, 0.12)
+			courier_sprite.scale = courier_base_scale * Vector2(0.95, 1.06)
+	elif state == State.SUCCESS:
+		celebration_time += delta
+		var hop = maxf(0.0, sin(minf(celebration_time, 0.6) / 0.6 * TAU))
+		courier_sprite.position.y = -159 - hop * 20
+		courier_sprite.rotation = hop * -0.06
+		courier_sprite.scale = courier_base_scale * Vector2(1.0 - hop * 0.04, 1.0 + hop * 0.04)
+	elif state == State.FAILURE:
+		courier_sprite.rotation = lerpf(courier_sprite.rotation, -0.08, minf(1.0, delta * 8))
+		courier_sprite.scale = courier_base_scale
+
 func _process(delta: float) -> void:
 	if paused:
 		return
 	elapsed_visual += delta
+	impact_life = maxf(0.0, impact_life - delta)
+	impact_label.visible = impact_life > 0
+	impact_label.position = impact_position - Vector2(140, 55 + (0.7 - impact_life) * 35)
+	impact_label.modulate.a = minf(1.0, impact_life * 4.0)
 	freeze_pulse = maxf(0, freeze_pulse - delta * 0.8)
 	# A tiny background-only impact shake leaves physics and touch coordinates intact.
 	if state == State.RESUMED and freeze_pulse > 0:
@@ -337,9 +415,7 @@ func _process(delta: float) -> void:
 		particle.velocity.y += 150 * delta
 		particle.life -= delta * 1.4
 	particles = particles.filter(func(p): return p.life > 0)
-	if courier_sprite and state in [State.RUNNING, State.RESUMED]:
-		courier_sprite.position.y = -159 + sin(sim_time * 15) * 5 if courier_grounded else -164
-		courier_sprite.rotation = sin(sim_time * 9) * 0.022
+	animate_courier(delta)
 	queue_redraw()
 
 func _draw() -> void:
@@ -375,4 +451,3 @@ func snapshot() -> Dictionary:
 	for actor in actors:
 		bodies.append({"position": actor.position, "velocity": actor.velocity, "elapsed": actor.elapsed, "deflected": actor.deflected})
 	return {"time": sim_time, "courier": courier.position, "velocity": courier.velocity, "hazards": bodies, "state": state}
-

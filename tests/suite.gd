@@ -131,9 +131,54 @@ func run() -> void:
 	check(app.screen == "levels", "level select opens")
 	app.show_title()
 	check(app.screen == "title", "home returns to title")
+	# Cancelling a result or replacing a hint must not leave callbacks/panels alive.
+	app.begin_level(0)
+	app.world.win()
+	app.begin_level(1)
+	await get_tree().create_timer(0.75).timeout
+	check(app.overlay == null and app.world.state == RescueWorld.State.PREVIEW, "retry cancels pending outcome")
+	app.toast("First hint")
+	var first_toast = weakref(app.toast_panel)
+	app.toast("Second hint")
+	await frames(2)
+	check(first_toast.get_ref() == null and app.toast_panel.get_child_count() == 2, "replacing hint frees its panel and timer")
+	app.world.win()
+	app.show_settings(true)
+	await get_tree().create_timer(0.75).timeout
+	check(app.overlay != null and app.world.paused, "pending result preserves pause overlay")
+	app.close_overlay()
+	await get_tree().create_timer(0.2).timeout
+	check(app.overlay != null and not app.world.paused, "pending result appears after closing pause")
+	# Visual animation never changes physics and remains frozen with its body.
+	await prepare(3)
+	var frozen_pose = app.world.courier_sprite.transform
+	await frames(20)
+	check(app.world.courier_sprite.transform == frozen_pose, "freeze preserves courier animation pose")
+	check(app.world.place("spring", app.level_defs[3].solution_position), "chapter one introduces spring placement")
+	app.world.resume()
+	await frames(100)
+	check(app.world.spring_used, "chapter one spring launches courier")
+	# Test a little latitude in timing and placement, beyond the exact hint point.
+	for index in [3, 6, 10]:
+		for offset in [-12.0, 12.0]:
+			app.begin_level(index)
+			await frames(2)
+			app.world.start()
+			while app.world.sim_time < 0.4:
+				await frames(1)
+			app.world.freeze()
+			var target = app.level_defs[index].solution_position + Vector2(offset, 0)
+			check(app.world.place(app.level_defs[index].solution_prop, target), "level %d nearby placement %.0f remains valid" % [index + 1, offset])
+			app.world.resume()
+			await run_to_outcome()
+			check(app.world.state == RescueWorld.State.SUCCESS, "level %d nearby solution %.0f rescues courier" % [index + 1, offset])
+	app.show_title()
+	Sound.shutdown()
+	await get_tree().create_timer(0.1).timeout
+	check(Sound.music.stream == null and not Sound.music.playing, "shutdown releases music playback")
+	check(Sound.voices.all(func(voice): return voice.stream == null and not voice.playing), "shutdown releases effect playback")
 	var output = {"checks": checks, "failures": failures, "levels": results, "status": "passed" if failures.is_empty() else "failed", "engine": Engine.get_version_info().string}
 	var file = FileAccess.open("res://build/test_results.json", FileAccess.WRITE)
 	file.store_string(JSON.stringify(output, "\t"))
 	print("TEST_RESULT: %s (%d checks, %d failures)" % [output.status, checks, failures.size()])
 	get_tree().quit(0 if failures.is_empty() else 1)
-
