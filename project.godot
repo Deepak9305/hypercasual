@@ -5,7 +5,7 @@ config_version=5
 config/name="Freeze Frame"
 run/main_scene="res://scenes/game.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
-config/description="Move one object. Change what happens."
+config/description="Design a rescue. Set the chain in motion."
 config/icon="res://assets/art/launcher.png"
 
 [autoload]

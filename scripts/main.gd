@@ -4,7 +4,7 @@ const CREAM = Color("fff6de")
 const CYAN = Color("00eeed")
 const CORAL = Color("fa7854")
 const GOLD = Color("ffbe40")
-const PROP_NAMES = {"umbrella": "UMBRELLA", "ramp": "RAMP", "spring": "SPRING"}
+const PROP_NAMES = {"umbrella": "UMBRELLA", "ramp": "RAMP", "spring": "SPRING", "crate": "CRATE", "fan": "FAN"}
 var title_font: Font
 var ui_font: Font
 var content: Control
@@ -28,6 +28,9 @@ var capture_mode: bool = false
 var outcome_timer: Timer
 var toast_panel: Panel
 var quitting: bool = false
+var turn_button: Button
+var remove_button: Button
+var plan_label: Label
 
 func _ready() -> void:
 	get_tree().auto_accept_quit = false
@@ -197,11 +200,11 @@ func show_title() -> void:
 	panel(Rect2(65, 335, 650, 115), CREAM)
 	label("ONE MOMENT. ENDLESS POSSIBILITIES.", Rect2(80, 345, 620, 92), 31)
 	panel(Rect2(0, 1165, 780, 523), CREAM, null, 34, CREAM, 0)
-	label("Move one object.\nChange what happens.", Rect2(65, 1185, 650, 125), 43)
-	button("PLAY", Rect2(100, 1340, 580, 112), func(): begin_level(mini(SaveData.unlocked - 1, 11)), CYAN, null, 52)
+	label("Build a chain.\nSave the delivery.", Rect2(65, 1185, 650, 125), 43)
+	button("PLAY", Rect2(100, 1340, 580, 112), func(): begin_level(mini(SaveData.unlocked - 1, level_defs.size() - 1)), CYAN, null, 52)
 	button("LEVELS", Rect2(100, 1480, 275, 84), show_levels, CREAM, null, 34)
 	button("SETTINGS", Rect2(405, 1480, 275, 84), func(): show_settings(false), CREAM, null, 34)
-	label("12 little disasters. One clever courier.", Rect2(65, 1600, 650, 50), 24, Color("52606e"))
+	label("Five tools. Eight rescues. Your clever plan.", Rect2(65, 1600, 650, 50), 24, Color("52606e"))
 
 func show_levels() -> void:
 	screen = "levels"
@@ -211,26 +214,29 @@ func show_levels() -> void:
 	logo(Vector2(40, 40), 0.9)
 	button("HOME", Rect2(575, 60, 150, 70), show_title, CREAM, null, 26)
 	label("YOUR NEXT GOOD IDEA", Rect2(40, 235, 700, 70), 41)
-	for chapter in range(3):
-		var y = 355 + chapter * 385
+	for chapter in range(Levels.CHAPTERS.size()):
+		var y = 330 + chapter * 555
 		label(Levels.CHAPTERS[chapter], Rect2(42, y, 696, 65), 30)
 		for local_index in range(4):
 			var index = chapter * 4 + local_index
 			var x = 65 + local_index % 2 * 340
-			var row_y = y + 85 + local_index / 2 * 130
+			var row_y = y + 85 + local_index / 2 * 195
 			var done = index in SaveData.completed
 			var unlocked_ = index < SaveData.unlocked
 			var node = button("%02d  %s" % [index + 1, "DONE" if done else "PLAY" if unlocked_ else "LOCKED"], Rect2(x, row_y, 310, 105), func(): begin_level(index), CYAN if done else GOLD if unlocked_ else CREAM, null, 31)
 			node.disabled = not unlocked_
+			label(level_defs[index].title, Rect2(x, row_y + 108, 310, 42), 21)
+			if SaveData.has_replay(level_defs[index].id):
+				button("WATCH RESCUE", Rect2(x + 30, row_y + 153, 250, 38), func(): watch_saved_replay(index), CREAM, null, 18)
 	label("Completed puzzles are always yours to replay.", Rect2(40, 1550, 700, 65), 26, Color("52606e"))
 
 func begin_level(index: int, retry: bool = false) -> void:
-	current_level = clampi(index, 0, 11)
+	current_level = clampi(index, 0, level_defs.size() - 1)
 	screen = "game"
 	if not retry:
 		attempts = 1
 	hint_step = 0
-	selected = "umbrella"
+	selected = level_defs[current_level].candidates[0]
 	outcome_pending = false
 	clear_ui()
 	world.visible = true
@@ -245,18 +251,24 @@ func build_game_ui() -> void:
 	label("%02d  •  %s" % [current_level + 1, level_defs[current_level].title], Rect2(30, 180, 455, 58), 28)
 	state_label = label("", Rect2(480, 182, 270, 58), 26, INK)
 	panel(Rect2(0, 1160, 780, 528), CREAM, null, 30, CREAM, 0)
-	instruction = label("", Rect2(28, 1175, 724, 82), 31)
-	for i in range(3):
-		var kind: String = ["umbrella", "ramp", "spring"][i]
-		var rect = Rect2(28 + i * 246, 1275, 230, 225)
-		var card = panel(rect, CREAM, null, 32, Color("dfd4bd"), 4)
-		art("res://assets/art/prop_%s.png" % kind, Rect2(rect.position + Vector2(12, 10), Vector2(206, 165)))
-		label(PROP_NAMES[kind], Rect2(rect.position + Vector2(5, 179), Vector2(220, 40)), 24)
+	instruction = label("", Rect2(28, 1168, 724, 68), 28)
+	var candidates = level_defs[current_level].candidates
+	var width_ = 724.0 / candidates.size()
+	for i in range(candidates.size()):
+		var kind: String = candidates[i]
+		var rect = Rect2(28 + i * width_, 1345, width_ - 10, 155)
+		var card = panel(rect, CREAM, null, 22, Color("dfd4bd"), 4)
+		art("res://assets/art/%s_%s.%s" % ["hazard" if kind == "crate" else "prop", kind, "svg" if kind == "fan" else "png"], Rect2(rect.position + Vector2(8, 5), Vector2(rect.size.x - 16, 105)))
+		label(PROP_NAMES[kind], Rect2(rect.position + Vector2(2, 113), Vector2(rect.size.x - 4, 38)), 19 if candidates.size() == 5 else 24)
 		prop_cards[kind] = {"panel": card, "rect": rect}
+	plan_label = label("", Rect2(28, 1238, 330, 96), 23)
+	turn_button = button("TURN", Rect2(365, 1238, 182, 96), func(): world.turn_tool(selected), GOLD, null, 21)
+	remove_button = button("REMOVE", Rect2(566, 1238, 186, 96), func(): world.remove_tool(selected), CREAM, null, 21)
 	icon_button("hint", Rect2(28, 1530, 138, 102), show_hint, "HINT")
 	primary = button("START", Rect2(189, 1520, 402, 119), primary_action, CYAN, null, 49)
 	icon_button("retry", Rect2(614, 1530, 138, 102), retry_level, "RETRY")
-	label("%s  •  %d / 12" % [Levels.CHAPTERS[current_level / 4], current_level + 1], Rect2(35, 1645, 710, 30), 19, Color("66727b"))
+	var footer = "BONUS: ≤ %d tools • %snew solution" % [level_defs[current_level].par_tools, "protect parcels • " if not level_defs[current_level].hazards.is_empty() else ""] if current_level >= 4 else "%s • %d / %d" % [Levels.CHAPTERS[0], current_level + 1, level_defs.size()]
+	label(footer, Rect2(35, 1645, 710, 30), 19, Color("66727b"))
 
 func update_game_ui() -> void:
 	if screen != "game" or not is_instance_valid(primary):
@@ -273,7 +285,7 @@ func update_game_ui() -> void:
 			state_label.text = "FREEZE NOW!" if world.freeze_cue_shown else "TIME IS MOVING"
 		RescueWorld.State.FROZEN, RescueWorld.State.PLACEMENT:
 			primary.text = "RESUME"
-			instruction.text = "Drag one object into the scene." if world.prop == null else "Move one object. Change what happens."
+			instruction.text = "Place tools, aim them, then RESUME.\nDrag a placed tool to adjust it."
 			state_label.text = "TIME FROZEN"
 		RescueWorld.State.RESUMED:
 			primary.text = "LET'S SEE…"
@@ -285,9 +297,16 @@ func update_game_ui() -> void:
 			instruction.text = "Special delivery. Safely delivered!"
 			state_label.text = "RESCUED!"
 		RescueWorld.State.FAILURE:
-			primary.text = "TRY AGAIN"
-			instruction.text = "Another idea. Another possibility."
+			primary.text = "REWIND"
+			instruction.text = "Rewind keeps your plan. Adjust one thing."
 			state_label.text = "TRY AGAIN"
+	var can_edit = world.state in [RescueWorld.State.FROZEN, RescueWorld.State.PLACEMENT]
+	plan_label.text = "%d / %d TOOLS" % [world.placements.size(), world.definition.tool_budget]
+	var direction_names = ["RIGHT", "DOWN-R", "DOWN", "DOWN-L", "LEFT", "UP-L", "UP", "UP-R"]
+	turn_button.text = "TURN • " + direction_names[world.directions.get(selected, 0)]
+	turn_button.disabled = not can_edit or selected == "crate"
+	remove_button.disabled = not can_edit or not world.placements.has(selected)
+	primary.disabled = can_edit and world.placements.is_empty() or world.state == RescueWorld.State.RESUMED
 	for kind in prop_cards:
 		var active = kind == selected and world.state in [RescueWorld.State.FROZEN, RescueWorld.State.PLACEMENT]
 		prop_cards[kind].panel.add_theme_stylebox_override("panel", box(CREAM, 32, CYAN if active else Color("dfd4bd"), 7 if active else 4))
@@ -302,7 +321,7 @@ func primary_action() -> void:
 			if not world.resume():
 				toast("Place an object in the scene first.")
 		RescueWorld.State.SUCCESS:
-			if current_level < 11:
+			if current_level < level_defs.size() - 1:
 				begin_level(current_level + 1)
 			else:
 				show_levels()
@@ -311,7 +330,12 @@ func primary_action() -> void:
 
 func retry_level() -> void:
 	attempts += 1
-	begin_level(current_level, true)
+	clear_ui()
+	screen = "game"
+	if not world.rewind_plan():
+		world.reset(level_defs[current_level], current_level)
+	build_game_ui()
+	update_game_ui()
 
 func show_hint() -> void:
 	if world.state == RescueWorld.State.PREVIEW:
@@ -324,7 +348,7 @@ func show_hint() -> void:
 	var hints = level_defs[current_level].hints
 	toast(hints[mini(hint_step, hints.size() - 1)])
 	if hint_step > 0:
-		selected = level_defs[current_level].solution_prop
+		selected = level_defs[current_level].solution[0].kind
 		world.hint_marker = true
 		update_game_ui()
 	hint_step += 1
@@ -355,7 +379,11 @@ func _input(event: InputEvent) -> void:
 	if quitting or screen != "game" or overlay != null:
 		return
 	if event is InputEventKey and event.pressed and not event.echo:
-		if event.keycode == KEY_SPACE:
+		if event.keycode == KEY_Q:
+			world.turn_tool(selected)
+		elif event.keycode == KEY_DELETE or event.keycode == KEY_BACKSPACE:
+			world.remove_tool(selected)
+		elif event.keycode == KEY_SPACE:
 			primary_action()
 		elif event.keycode == KEY_R:
 			retry_level()
@@ -385,6 +413,11 @@ func _input(event: InputEvent) -> void:
 				get_viewport().set_input_as_handled()
 				return
 		if at.y > 250 and at.y < 1050:
+			for kind in world.placements:
+				if Rect2(world.tool_nodes[kind].position - RescueWorld.PROP_SIZES[kind] * 0.5, RescueWorld.PROP_SIZES[kind]).has_point(at):
+					selected = kind
+					update_game_ui()
+					break
 			dragging = true
 			drag_pointer = event.index if event is InputEventScreenTouch else -1
 			world.show_ghost(selected, at)
@@ -398,7 +431,7 @@ func _input(event: InputEvent) -> void:
 	elif is_release and dragging:
 		if at.y < 1150:
 			if not world.place(selected, at):
-				toast("Try a clear spot. Leave room for the courier.")
+				toast("Use a clear spot. At the tool limit? Move or remove a placed tool.")
 		world.hide_ghost()
 		dragging = false
 		drag_pointer = -2
@@ -446,6 +479,8 @@ func close_overlay() -> void:
 	world.paused = false
 
 func on_rescued() -> void:
+	var goals = SaveData.record_rescue(level_defs[current_level].id, world.replay_data())
+	world.last_goals = goals
 	SaveData.finish_level(current_level)
 	if outcome_pending:
 		return
@@ -488,24 +523,60 @@ func show_result(success: bool, reason: String) -> void:
 	overlay = Control.new()
 	overlay.size = Vector2(780, 1688)
 	ui_layer.add_child(overlay)
-	panel(Rect2(70, 485, 640, 640), CREAM, overlay, 40)
-	label("TIME WELL SPENT!" if success else "NEW PLAN?", Rect2(95, 515, 590, 100), 64, INK, overlay, true)
-	art("res://assets/art/courier_happy.png" if success else "res://assets/art/courier_worried.png", Rect2(295, 620, 190, 230), overlay)
-	label("Courier rescued!" if success else reason, Rect2(100, 845, 580, 65), 35, INK, overlay)
-	button("NEXT DELIVERY" if success and current_level < 11 else "ALL DELIVERED!" if success else "TRY AGAIN", Rect2(125, 940, 530, 90), func():
+	panel(Rect2(70, 425, 640, 800), CREAM, overlay, 40)
+	label("TIME WELL SPENT!" if success else "NEW PLAN?", Rect2(95, 455, 590, 100), 64, INK, overlay, true)
+	art("res://assets/art/courier_happy.png" if success else "res://assets/art/courier_worried.png", Rect2(310, 555, 160, 180), overlay)
+	var summary = "Courier rescued!" if success else reason + "\nYour placements are kept."
+	# Failure stays highlighted behind the panel until the plan is rewound.
+	var summary_label = label(summary, Rect2(100, 745, 580, 100), 28, INK, overlay)
+	summary_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	if success:
+		var goals = world.last_goals
+		var bonus = "Rescue recorded. Try another idea!"
+		if current_level >= 4:
+			bonus = "%s Efficient" % ("✓" if goals.get("few_tools", false) else "○")
+			if not level_defs[current_level].hazards.is_empty():
+				bonus += " • %s Parcels safe" % ("✓" if goals.get("all_parcels", false) else "○")
+			bonus += " • %s New solution" % ("✓" if goals.get("different_solution", false) else "○")
+		label(bonus, Rect2(90, 856, 600, 42), 19, INK, overlay)
+		button("WATCH SAVED RESCUE", Rect2(125, 905, 530, 62), func(): watch_saved_replay(current_level), GOLD, overlay, 26)
+	button("NEXT DELIVERY" if success and current_level < level_defs.size() - 1 else "ALL DELIVERED!" if success else "REWIND & ADJUST", Rect2(125, 990, 530, 90), func():
 		if success:
-			if current_level < 11:
+			if current_level < level_defs.size() - 1:
 				begin_level(current_level + 1)
 			else:
 				show_levels()
 		else:
 			retry_level(), CYAN, overlay, 33)
-	button("REPLAY" if success else "LEVELS", Rect2(235, 1045, 310, 58), retry_level if success else show_levels, CREAM, overlay, 25)
+	button("TRY ANOTHER SOLUTION" if success else "LEVELS", Rect2(125, 1110, 530, 58), retry_level if success else show_levels, CREAM, overlay, 25)
+
+func watch_saved_replay(index: int) -> void:
+	var data = SaveData.load_replay(level_defs[index].id)
+	if data.is_empty():
+		toast("Complete this rescue to save a replay.")
+		return
+	begin_level(index)
+	clear_ui()
+	screen = "replay"
+	world.watch_replay(data)
+	logo()
+	panel(Rect2(24, 180, 730, 64), CREAM)
+	label("SAVED RESCUE • " + level_defs[index].title, Rect2(30, 182, 720, 58), 28)
+	panel(Rect2(0, 1160, 780, 528), CREAM, null, 30, CREAM, 0)
+	label("YOUR RESCUE, REPLAYED", Rect2(40, 1190, 700, 70), 40)
+	var chain: Array[String] = []
+	for event in data.events:
+		if event.text not in chain:
+			chain.append(event.text)
+	var caption = label(" → ".join(chain), Rect2(50, 1280, 680, 115), 27)
+	caption.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	button("WATCH AGAIN", Rect2(75, 1425, 630, 85), func(): watch_saved_replay(index), GOLD, null, 34)
+	button("TRY ANOTHER SOLUTION", Rect2(75, 1530, 630, 85), func(): begin_level(index), CYAN, null, 31)
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_APPLICATION_PAUSED:
 		SaveData.save_progress()
-		if screen == "game" and overlay == null:
+		if screen in ["game", "replay"] and overlay == null:
 			show_settings(true)
 	elif what == NOTIFICATION_WM_GO_BACK_REQUEST:
 		if overlay:

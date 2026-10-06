@@ -17,19 +17,21 @@ func frames(count: int) -> void:
 		await get_tree().process_frame
 
 func click(control: Control) -> void:
+	if control == null:
+		check(false, "requested button exists")
+		return
 	var at = control.get_global_rect().get_center()
 	var event = InputEventMouseButton.new()
 	event.position = at
 	event.button_index = MOUSE_BUTTON_LEFT
 	event.pressed = true
 	get_viewport().push_input(event, true)
-	await get_tree().process_frame
+	await frames(1)
 	event = InputEventMouseButton.new()
 	event.position = at
 	event.button_index = MOUSE_BUTTON_LEFT
-	event.pressed = false
 	get_viewport().push_input(event, true)
-	await get_tree().process_frame
+	await frames(1)
 
 func find_button(parent: Node, text: String) -> Button:
 	for child in parent.get_children():
@@ -62,123 +64,116 @@ func drag_prop(kind: String, target: Vector2) -> void:
 	get_viewport().push_input(release, true)
 	await frames(2)
 
+func freeze_level(index: int) -> void:
+	app.begin_level(index)
+	await frames(2)
+	await click(app.primary)
+	for i in range(180):
+		if app.world.state != RescueWorld.State.RUNNING or app.world.sim_time >= app.level_defs[index].freeze_at:
+			break
+		await frames(1)
+	if app.world.state == RescueWorld.State.RUNNING:
+		await click(app.primary)
+	check(app.world.state == RescueWorld.State.FROZEN, "%s freezes through controls" % app.level_defs[index].title)
+
+func outcome() -> void:
+	for i in range(1000):
+		if app.world.state in [RescueWorld.State.SUCCESS, RescueWorld.State.FAILURE]:
+			return
+		await frames(1)
+
 func run() -> void:
 	SaveData.test_mode = true
 	SaveData.sound_enabled = false
+	SaveData.unlocked = 1
 	Sound.update_music()
 	app = load("res://scenes/game.tscn").instantiate()
 	add_child(app)
 	await frames(5)
 	await capture("title")
 	await click(find_button(app.ui_layer, "PLAY"))
-	check(app.screen == "game", "pointer clicks title Play")
-	await click(app.primary)
-	check(app.world.state == RescueWorld.State.RUNNING, "pointer clicks Start")
-	while app.world.state == RescueWorld.State.RUNNING:
-		await get_tree().process_frame
-	check(app.world.state == RescueWorld.State.FROZEN, "tutorial automatically freezes")
+	check(app.screen == "game", "Play opens campaign")
+	await freeze_level(0)
 	await capture("gameplay")
-	# Select umbrella and drag with actual viewport input routing.
-	var start = app.content.position + Vector2(120, 1350) * app.content.scale
-	var end = app.content.position + Vector2(320, 750) * app.content.scale
-	var press = InputEventMouseButton.new()
-	press.button_index = MOUSE_BUTTON_LEFT
-	press.pressed = true
-	press.position = start
-	get_viewport().push_input(press, true)
-	await frames(1)
-	var motion = InputEventMouseMotion.new()
-	motion.position = end
-	motion.button_mask = MOUSE_BUTTON_MASK_LEFT
-	get_viewport().push_input(motion, true)
-	await frames(1)
-	var release = InputEventMouseButton.new()
-	release.button_index = MOUSE_BUTTON_LEFT
-	release.pressed = false
-	release.position = end
-	get_viewport().push_input(release, true)
-	await frames(2)
-	check(app.world.prop_kind == "umbrella", "viewport drag places umbrella")
-	await capture("placement")
+	await drag_prop("umbrella", app.level_defs[0].solution[0].position)
+	check(app.world.placements.has("umbrella"), "native drag places shield")
+	check(app.world.placements.umbrella.direction == 4, "teaching shield points away from courier")
 	await click(app.primary)
-	check(app.world.state == RescueWorld.State.RESUMED, "pointer clicks Resume")
-	while app.world.state == RescueWorld.State.RESUMED:
-		await get_tree().process_frame
-	check(app.world.state == RescueWorld.State.SUCCESS, "complete rendered rescue succeeds")
-	await get_tree().create_timer(0.85).timeout
-	check(app.overlay != null, "success result opens")
-	await capture("success")
-	await click(find_button(app.overlay, "NEXT DELIVERY"))
-	check(app.current_level == 1 and app.world.state == RescueWorld.State.PREVIEW, "pointer clicks Next Delivery")
+	await outcome()
+	check(app.world.state == RescueWorld.State.SUCCESS, "rendered teaching rescue succeeds")
+	await get_tree().create_timer(0.8).timeout
+	check(app.overlay != null, "result opens")
+	await click(find_button(app.overlay, "WATCH SAVED RESCUE"))
+	check(app.screen == "replay" and app.world.watching_replay, "result plays saved rescue")
+	await frames(30)
+	await capture("saved_replay")
+	await click(find_button(app.ui_layer, "TRY ANOTHER SOLUTION"))
+	check(app.screen == "game", "replay returns to experiment")
+	for index in [4, 5, 6, 7]:
+		await freeze_level(index)
+		check(app.prop_cards.size() == 5, "chain levels expose five touch tool cards")
+		for tool in app.level_defs[index].solution:
+			await drag_prop(tool.kind, tool.position)
+		check(app.world.placements.size() == app.level_defs[index].solution.size(), "native drag keeps combined plan")
+		await capture(app.level_defs[index].id + "_plan")
+		await click(app.primary)
+		var impact_captured = false
+		for i in range(1000):
+			if app.world.state != RescueWorld.State.RESUMED:
+				break
+			if not impact_captured and app.world.focus_life > 0 and app.world.sim_time > 1.0:
+				await capture(app.level_defs[index].id + "_impact")
+				impact_captured = true
+			await frames(1)
+		check(app.world.state == RescueWorld.State.SUCCESS, "%s rendered chain succeeds" % app.level_defs[index].title)
+		if index == 7:
+			check(app.world.platform_ridden, "Express Route lands on moving platform")
+		await get_tree().create_timer(0.8).timeout
+		await capture(app.level_defs[index].id + "_result")
+	# Intentionally omit the catcher: redirecting alone breaks the bridge.
+	await freeze_level(5)
+	await drag_prop("umbrella", app.level_defs[5].solution[0].position)
+	await click(app.turn_button)
+	check(app.world.placements.umbrella.direction == 4, "Turn changes placed tool")
+	await click(app.turn_button)
+	check(app.world.placements.umbrella.direction == 0, "Turn restores rightward aim")
 	await click(app.primary)
-	while app.world.state == RescueWorld.State.RUNNING:
-		await get_tree().process_frame
-	app.world.place("umbrella", Vector2(650, 400))
+	await outcome()
+	check(app.world.state == RescueWorld.State.FAILURE and app.world.failure_reason.contains("bridge"), "missing catcher breaks bridge")
+	await capture("chain_failure")
+	await get_tree().create_timer(0.7).timeout
+	var time = app.world.frozen_snapshot.time
+	await click(find_button(app.overlay, "REWIND & ADJUST"))
+	check(app.overlay == null and app.world.state == RescueWorld.State.PLACEMENT, "Rewind returns to planning")
+	check(app.world.placements.has("umbrella") and app.world.sim_time == time, "Rewind preserves shield and frozen time")
+	await drag_prop("crate", app.level_defs[5].solution[1].position)
+	check(app.world.placements.size() == 2, "retry adds missing catcher to retained plan")
 	await click(app.primary)
-	while app.world.state == RescueWorld.State.RESUMED:
-		await get_tree().process_frame
-	check(app.world.state == RescueWorld.State.FAILURE, "rendered incorrect placement fails")
-	await get_tree().create_timer(0.75).timeout
-	check(app.overlay != null, "failure result opens")
-	await capture("failure")
-	await click(find_button(app.overlay, "TRY AGAIN"))
-	check(app.world.state == RescueWorld.State.PREVIEW and app.overlay == null, "pointer clicks retry")
-	await click(app.primary)
+	await outcome()
+	check(app.world.state == RescueWorld.State.SUCCESS, "one edit fixes chain")
+	await get_tree().create_timer(0.8).timeout
+	await click(find_button(app.overlay, "TRY ANOTHER SOLUTION"))
 	await click(app.ui_layer.get_node("PauseButton"))
-	check(app.world.paused and app.overlay != null, "pointer opens pause")
-	var sound_state = SaveData.sound_enabled
+	check(app.world.paused and app.overlay != null, "pause blocks simulation")
 	await click(find_button(app.overlay, "SOUND  •  OFF"))
-	check(SaveData.sound_enabled != sound_state, "pointer toggles sound")
+	check(SaveData.sound_enabled, "settings toggle through pointer")
 	await capture("settings")
 	await click(find_button(app.overlay, "KEEP PLAYING"))
-	check(not app.world.paused, "pointer continues game")
+	check(not app.world.paused, "Keep Playing resumes")
+	await click(app.remove_button)
+	check(not app.world.placements.has(app.selected), "Remove deletes only selected tool")
 	app.show_levels()
 	await capture("levels")
-	check(find_button(app.ui_layer, "03  LOCKED").disabled, "locked level cannot be clicked")
-	await click(find_button(app.ui_layer, "01  DONE"))
-	check(app.current_level == 0, "pointer replays completed level")
-	app.begin_level(8)
-	app.world.start()
-	app.world.freeze()
-	app.world.place("spring", Vector2(340, 1020))
-	await capture("platform")
-	# New puzzles are played through their real Freeze / drag / Resume controls.
-	for index in [3, 6, 10]:
-		app.begin_level(index)
-		await click(app.primary)
-		while app.world.sim_time < app.level_defs[index].freeze_at:
-			await frames(1)
-		check(app.state_label.text == "FREEZE NOW!", "level %d signals manual freeze timing" % (index + 1))
-		await click(app.primary)
-		check(app.world.state == RescueWorld.State.FROZEN, "level %d manual freeze works" % (index + 1))
-		await drag_prop(app.level_defs[index].solution_prop, app.level_defs[index].solution_position)
-		check(app.world.prop_kind == app.level_defs[index].solution_prop, "level %d pointer places new solution" % (index + 1))
-		await capture({3: "branch_office", 6: "art_attack", 10: "rolling_chain"}[index])
-		await click(app.primary)
-		var captured_feedback = false
-		while app.world.state == RescueWorld.State.RESUMED:
-			if not captured_feedback and index == 6 and app.world.spring_used and not app.world.courier_grounded and absf(app.world.courier.velocity.y) < 80:
-				await capture("courier_jump")
-				captured_feedback = true
-			elif not captured_feedback and index == 10 and app.world.impact_life > 0:
-				await capture("ramp_feedback")
-				captured_feedback = true
-			await frames(1)
-		check(app.world.state == RescueWorld.State.SUCCESS, "level %d rendered rescue succeeds" % (index + 1))
-		if index == 10:
-			check(app.world.actors.all(func(actor): return actor.deflected), "one ramp deflects both rolling hazards")
+	check(find_button(app.ui_layer, "WATCH RESCUE") != null, "saved rescues accessible from level select")
+	check(find_button(app.ui_layer, "01  DONE") != null, "completion displayed")
 	app.show_title()
-	await frames(30)
 	var began = Time.get_ticks_usec()
 	await frames(120)
-	var duration = (Time.get_ticks_usec() - began) / 1000000.0
-	var measured = 120.0 / duration
+	var measured = 120.0 / ((Time.get_ticks_usec() - began) / 1000000.0)
 	var result = {"status": "passed" if failures.is_empty() else "failed", "checks": checks, "failures": failures, "desktop_render_fps": measured, "viewport": str(get_viewport().get_visible_rect().size), "android_device_tested": false}
-	var output = FileAccess.open("res://build/visual_test_results.json", FileAccess.WRITE)
-	output.store_string(JSON.stringify(result, "\t"))
+	FileAccess.open("res://build/visual_test_results.json", FileAccess.WRITE).store_string(JSON.stringify(result, "\t"))
 	print("VISUAL_TEST_RESULT: ", JSON.stringify(result))
 	if failures.is_empty():
-		# Exercise the same audio teardown as a real desktop close / Android exit.
 		app.quit_game()
 	else:
 		Sound.shutdown()

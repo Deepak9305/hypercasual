@@ -1,35 +1,32 @@
 {
-  "date": "2026-10-05",
-  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "date": "2026-10-06",
+  "engine": "4.7.2-stable (official)",
   "host": "Linux x86_64 / Debian 13",
   "renderer": "Compatibility / Mesa llvmpipe OpenGL 4.5",
   "physics": {
-    "checks": 196,
+    "checks": 159,
     "failures": 0,
     "exit_status": 0
   },
   "rendered": {
-    "checks": 29,
+    "checks": 39,
     "failures": 0,
     "exit_status": 0,
-    "fps_title_scene": 60.0062406490275
+    "fps_title_scene": 42.8458652133349
   },
   "shutdown": {
-    "ambient_playback_leak_reproduced_in_baseline": true,
     "physics_exit_clean": true,
     "rendered_game_exit_clean": true
   },
   "android": {
     "device_tested": false,
     "adb_targets": [],
-    "emulator_installed": false,
-    "kvm_available": false,
     "export_passed": true,
     "signature_v2_v3_verified": true,
     "alignment_16kb_verified": true,
     "package": "com.freezeframe.rescue",
-    "version_name": "0.2.0",
-    "version_code": 2,
+    "version_name": "0.3.0",
+    "version_code": 3,
     "min_api": 24,
     "target_api": 36,
     "architectures": [
@@ -39,28 +36,27 @@
       "android.permission.VIBRATE"
     ],
     "sdk_build_tools": "36.0.0",
-    "jdk_major": 21,
-    "sha256": "f0e0f03b69f570462bbc8072ca350faf8a2470cf2d0d9337d87ae48099560f37",
-    "debug_signer_changed": true
+    "sha256": "39cc6147c3cebb9084d83fb1ca600a18c1253d0e16fbdaa3612d9954bc5800d1"
   },
+  "player_playtest_completed": false,
   "reference_sha256": "caf65c7cc78db7ea45050e1476e1d05b6f83724f4769fbac4d4de75cee5f5757",
   "source_sha256": {
-    "export_presets.cfg": "c75eb046264dfe941e79b63728c898657451c3333a31ff40e7f3f844d45e7f89",
-    "project.godot": "c50c966ee3ae0bc846125b56d909797ed10fe218cb7aadb238096ba62a7fdea9",
-    "scripts/actor.gd": "9610bf71e031bdd11f4cb6fea5d3bb3c603973785dad45094ec07cf7204f3559",
-    "scripts/level_definition.gd": "a4c608bb0c3248ca8ce33779f2bb748b1e8c0076da76c229c914f1279458acfa",
-    "scripts/levels.gd": "ea288943df00f1d13246bdd2ee4805646d43303c0de4bed1c29ac63eef91d0c8",
-    "scripts/main.gd": "6eb7cfd5aa8601c73ba2a39ab30ad6178e2a13bd47ae6b3d0e6f050182d8623c",
-    "scripts/save_data.gd": "8a727aaebf2c28930e12cb046193803e885c078829fbf5dc5a78715fdf3da51c",
+    "assets/art/prop_fan.svg": "de87e88b065c2e2e83c6633fad1e6a92f1440a81e202874a15862fb4ca71192f",
+    "export_presets.cfg": "a148f9bcd4ce86111857e942bb08ba263bc80c629262220682b8464cb0d2ca1c",
+    "project.godot": "0ddad88b5c1fa54bcbc8c0d1f8e807148c0bc4d82997166ba379b19a129ea663",
+    "scripts/actor.gd": "75da510e46c0bee18f2f7320285bd5318358c9d1d338ca62b4ce0370c0b72635",
+    "scripts/level_definition.gd": "7f6f6c5f6a427abe05dd1fe7abea9e97ff96ea6c9eca78a50fcbbac347d81229",
+    "scripts/levels.gd": "c5e0540553058de856b6c7f0b69aa6bd3edfefa77c0efc6e880019e5be3dce65",
+    "scripts/main.gd": "d9fcbaca8c85456e01f10266c74165003901039fef0f86d32e072b53975e644b",
+    "scripts/save_data.gd": "9c5b7cd73d6b17c018870a835a15efffcc5fb18de2801a972bdcead1b7d7dce6",
     "scripts/sound.gd": "1ce6c2145ae20db444cf1b0a7ee47541dbd23272fe2b99054cc66b49098efd42",
-    "scripts/world.gd": "3970caf5080a57980e56f2b6023572af777234fc42b3c38f82f506fd6ca88977",
-    "tests/suite.gd": "d95b2ba3f0f6695a7bc3bcef62861b85ac62f1c35c7964a76c6274632d08e262",
-    "tests/visual_suite.gd": "1aec6fd30b194b5a59f316777b698afa3c46e7aa24b3dc8f5c2122ad6d9733f8"
+    "scripts/world.gd": "db7f8ef538b935af0bc8430cd7a4155b130f8b1796fc7ac2efe9286e1daf5e86",
+    "tests/suite.gd": "f5b902f8448beaad60ee48c93554d50cf99f2e1ea511b43678928b00710c2154",
+    "tests/visual_suite.gd": "2c90e18a2cdf270517e52d92648becfb166e250dcd7ea4cd34eef36b1276bcdc"
   },
   "commands": [
-    "godot --headless --editor --path . --import",
-    "godot --headless --verbose --path . --scene tests/runner.tscn --fixed-fps 60 -- --test",
-    "godot --verbose --path . --resolution 390x844 --audio-driver Dummy --max-fps 60 --scene tests/visual_runner.tscn -- --test",
+    "godot --headless --path . --scene tests/runner.tscn --fixed-fps 60 -- --test",
+    "DISPLAY=:99 godot --path . --resolution 390x844 --audio-driver Dummy --max-fps 60 --scene tests/visual_runner.tscn -- --test",
     "godot --headless --path . --export-debug Android build/FreezeFrame-debug.apk",
     "apksigner verify --verbose --print-certs build/FreezeFrame-debug.apk",
     "zipalign -c -P 16 -v 4 build/FreezeFrame-debug.apk",

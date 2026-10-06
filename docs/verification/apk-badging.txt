@@ -1,4 +1,4 @@
-package: name='com.freezeframe.rescue' versionCode='2' versionName='0.2.0' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'
+package: name='com.freezeframe.rescue' versionCode='3' versionName='0.3.0' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'
 install-location:'auto'
 sdkVersion:'24'
 targetSdkVersion:'36'

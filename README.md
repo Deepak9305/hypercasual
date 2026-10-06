@@ -1,26 +1,28 @@
 # Freeze Frame
 
-A native portrait Android rescue puzzle game. Freeze a disaster, move one object, and resume to save the courier. Includes 12 levels across courtyard, workshop and rooftop chapters, generated cartoon artwork, local progress, hints, settings, original sound, and vibration on Android.
+A native portrait Android rescue puzzle game. Freeze a disaster, design a rescue sequence, and set the chain in motion. Version 0.3.0 has four short teaching levels followed by **Wrong Address**, **Fragile Delivery**, **Air Mail**, and **Express Route**.
 
-[Download Android debug APK](https://github.com/Deepak9305/hypercasual/raw/refs/heads/main/build/FreezeFrame-debug.apk) · [Continuation notes](HANDOFF.md)
-
-<img src="docs/screenshots/gameplay.png" alt="Freeze Frame playable cartoon game" width="300">
+<img src="docs/screenshots/fragile_plan.png" alt="Two-tool plan: redirect a parcel onto a crate catcher above a fragile bridge" width="300">
 
 ## Play
 
-- Android: copy `build/FreezeFrame-debug.apk` to a phone and open it to install. This is a debug-signed ARM64 build, requiring Android 7.0 / API 24 or newer. Android may request permission for your file manager to install this app.
-- Windows desktop: run `powershell -ExecutionPolicy Bypass -File .\Play.ps1`, or open `project.godot` in Godot 4.7.2 and press F6/F5 to run the game.
-- Mouse and touch are supported. Desktop shortcuts: Space for Start / Freeze / Resume, R to retry, H for hints, Escape for pause.
+- Android: install `build/FreezeFrame-debug.apk`. Debug-signed ARM64 build, Android 7.0 / API 24 or newer, package `com.freezeframe.rescue`, version 0.3.0 (code 3).
+- Windows: run `powershell -ExecutionPolicy Bypass -File .\Play.ps1`, or open `project.godot` in Godot 4.7.2 and press F5.
+- Desktop shortcuts: Space starts/freezes/resumes; Q turns the selected tool; Delete removes it; R rewinds your plan; H shows hints; Escape pauses.
 
-## Controls
+Start and freeze before the hazard arrives. The four teaching levels freeze automatically; later levels show a FREEZE NOW cue. Drag a tool card into the scene, or select a card and tap a position. Drag an existing tool to move it. TURN changes an umbrella, ramp, or spring between left and right, and aims a fan in eight directions. REMOVE frees a tool slot. Floor tools snap to the path; the other tools preview their placement. Invalid edits leave your plan intact.
 
-Start the scene, then freeze before the hazard reaches the courier. Levels 1–2 freeze automatically. Drag a prop card into the scene, or select a card and place it with a click. Umbrellas can be placed overhead; ramps and springs snap to the floor. An outlined ghost previews placement. Overlaps are rejected and preserve the last placed prop. You may replace your chosen object before resuming; only one prop is active per attempt.
+Use one of each tool, within the level's tool limit. Umbrellas redirect falling objects; ramps launch rolling objects; springs launch the courier **and objects**; movable crates catch parcels and hold pressure plates; fans push hazards and placed crates. Redirected parcels retain their collisions and can still injure the courier, block the route, or break a fragile bridge. A crate catcher stops and secures a parcel. A raised switch latches its gate open; a pressure plate needs a weight to stay on it. Secured low cargo can be stepped over. The fragile catcher perch breaks under a direct parcel impact, so place a crate on it first. Moving platforms and conveyors are environmental mechanisms.
 
-Resume lets the physical scene continue from its frozen velocities. A rescue unlocks the next level. Hints first explain the danger, then reveal the authored solution location. Failed attempts can be retried immediately. A FREEZE NOW cue helps with manual timing after the two tutorial levels. Chapters introduce umbrella, ramp, and spring solutions before combining stationary obstacles, staggered hazards, wind, and moving platforms. The courier has speed-linked stride motion, airborne lean, landing squash, and a celebration hop; short BONK / WHOOSH / BOING callouts explain successful physical interactions. Progress and audio/haptic settings are stored locally in Godot's app data folder. There are no accounts, ads, network permissions, or gameplay servers.
+On failure, **REWIND & ADJUST** restores the same frozen instant with every tool and direction intact. Adjust one thing and retry. A brief inset follows impacts, callouts identify transitions, and a persistent red marker highlights where a chain broke. Hints first describe the sequence, then mark its first intervention.
+
+A successful rescue saves a local motion replay and event timeline. Watch it from results or level select, then try another solution. Optional goals reward a tool count at or below the displayed par, securing every parcel, and completing a different plan. For example, Wrong Address supports both redirecting a parcel onto the raised switch and shielding left while a placed crate holds that switch. Replays store the latest successful rescue per level; they are local playback, not video exports.
+
+The new rescue campaign has a separate save section. Previous campaign progress is retained, settings carry over, and the eight new puzzles start at level one. No accounts, ads, analytics, purchases, network gameplay, or servers are included. Ropes and seesaws are deferred until the five-tool combinations have been playtested.
 
 ## Develop and build
 
-Use Godot 4.7.2 with GDScript and the Compatibility renderer. Android export needs matching templates, the SDK, and OpenJDK 17 or later. On another machine, install matching export templates and configure Java SDK / Android SDK paths under Editor Settings > Export > Android. The Android preset uses your locally configured Godot debug keystore; no machine-specific key path is committed.
+Use Godot 4.7.2 and the Compatibility renderer. Android export requires matching templates, Android SDK tools, and Java 17 or later. Configure SDK paths and your local debug keystore in the Godot editor; signing keys remain outside Git.
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\Test.ps1
@@ -28,40 +30,32 @@ powershell -ExecutionPolicy Bypass -File .\Test.ps1 -Visual
 powershell -ExecutionPolicy Bypass -File .\Build-Android.ps1
 ```
 
-Linux / cloud commands (Godot 4.7.2 must be on PATH):
+In this cloud environment, source `/workspace/.cloud-setup/hypercasual/env.sh` first. Rendered tests require the configured Xorg display (`:99`).
 
 ```bash
 godot --headless --editor --path . --import
 godot --headless --path . --scene tests/runner.tscn --fixed-fps 60 -- --test
-godot --path . --resolution 390x844 --audio-driver Dummy --max-fps 60 --scene tests/visual_runner.tscn -- --test
+DISPLAY=:99 godot --path . --resolution 390x844 --audio-driver Dummy --max-fps 60 --scene tests/visual_runner.tscn -- --test
 godot --headless --path . --export-debug Android build/FreezeFrame-debug.apk
 ```
 
-Rendered tests need an X11 display. Cloud startup instructions activate the matching engine, writable app/cache directories, SDK, and a dummy Xorg display. Android export was verified with API 36 build tools, matching Godot templates, and OpenJDK 21. No Gradle build is needed for this project.
-
-The standard Godot Android export template supplies minimum API 24 and target API 36. The APK package is `com.freezeframe.rescue`, version `0.2.0` (version code 2). Release signing and store publication are separate from this debug build. The rebuilt APK uses a different local debug certificate from the original Windows build. Android will reject an in-place update signed with the old key: back up any progress you need before uninstalling the old debug app and installing this one. No signing key is committed.
-
 ## Project layout
 
-- `scripts/levels.gd` authors 12 `LevelDefinition` resources. Adjust motion, timing, hazards, hints and solution placements here.
-- `scripts/world.gd` owns the fixed-step scene, collision rules, freeze state, prop placement and effects. `scripts/actor.gd` supplies physics-driven hazards.
-- `scripts/main.gd` owns native menus, touch/mouse input, safe-area fitting, hints and results. `save_data.gd` and `sound.gd` are autoload services.
-- `assets/art` contains project-owned raster artwork and generation manifests; `docs` retains all three original visual directions.
-- `tools/make_audio.py` regenerates the nine original synthesized WAV files without third-party samples.
-- `tests` covers solutions and wrong placements, freeze/retry invariants, touch, pause, persistence, and rendered pointer interaction.
-- `build` contains the APK, captured screenshots, test reports and build logs. It is excluded from game resource import.
+- `scripts/levels.gd` authors the eight puzzles, budgets, solution sequences, and mechanisms; `level_definition.gd` defines their resource format.
+- `scripts/world.gd` owns simulation, multi-tool placement, snapshots, gates, feedback and replay playback; `actor.gd` supplies moving hazards and placed crates.
+- `scripts/main.gd` owns native controls, touch/mouse input, safe-area fitting, results, and replay screens.
+- `scripts/save_data.gd` stores progress, optional goals, plan signatures, and versioned local replay files; `sound.gd` supplies audio/haptics.
+- `tests` contains gameplay/state and rendered pointer suites. Current reports are in `docs/verification`; screenshots are in `docs/screenshots`.
+- `docs/playtesting.md` describes the next player sessions. `build` contains the debug APK and fresh test output, and is excluded from game imports.
 
 ## Verification and limits
 
-All 12 authored solutions and incorrect-placement cases are exercised through Godot's physics engine. Rendered tests click actual native UI controls, drag a prop, complete a rescue, exercise failure/retry, pause/settings and replay. See `build/test_results.json`, `build/visual_test_results.json`, and `design-qa.md` for final results and evidence.
+Godot tests cover all eight authored solutions, broken chains, nearby placements (±12 logical pixels), alternate tool combinations, spring/crate and fan/crate interactions, redirected parcel damage, closing a gate after removing its weight, retained rewind snapshots, touch ownership, save migration, local replays, and optional goals. Rendered tests exercise real pointer controls through all four chains, turn/remove, failure/rewind/repair, settings, and replay navigation. Both suites release audio cleanly.
 
-The latest verified reports are committed under `docs/verification`: 196 physics/state assertions and 29 rendered interface assertions passed on Godot 4.7.2. Desktop rendering measured approximately 60 FPS on Linux with Mesa software OpenGL at a 390×844 window / 780×1688 logical viewport. Both suites exit without leaked-object or retained-resource warnings, including the real game exit path with music enabled.
+The APK is checked for alignment, v2/v3 signatures, version, ARM64, API levels, and permissions (VIBRATE only). No phone or emulator is connected: Android installation, safe areas, audio focus, haptics, battery use, and on-device performance remain unverified. Cloud software rendering is separate from Android performance. Player experimentation and level difficulty still need real playtesting; passing authored solutions does not establish player enjoyment.
 
-Desktop Compatibility rendering is measured separately from Android. No Android device or emulator is connected; installation, real-device safe areas, haptics, audio focus, battery use and Android frame rate remain unverified. This is a playable debug build; retention, level difficulty and viral appeal need player testing.
+A debug APK signed with a different certificate cannot update an older install. Preserve any needed progress before uninstalling that old debug build. Release signing and store publication remain separate work.
 
 ## Assets and licenses
 
-Game illustration, character poses, props, hazards, launcher artwork and logo were generated with the built-in image-generation tool using the selected Cartoon Catastrophe mockup. Each `*_manifest.json` records exact prompts, reference inputs, source image paths, final paths and asset processing. UI labels remain native editable controls.
-
-Lilita One and Bangers fonts are distributed under SIL Open Font License; license files are in `assets/fonts`. Pause, hint and retry icons are unmodified Phosphor Icons assets, under the MIT license in `assets/icons/LICENSE.txt`. Audio was synthesized locally for this project. Godot is distributed under the MIT license; see https://godotengine.org/license/.
-
+The original cartoon art was generated with the built-in image-generation tool; manifests in `assets/art` retain its provenance. The fan is a project-authored SVG; mechanisms, arrows and impact inset are native drawings. Existing Lilita One and Bangers fonts use SIL OFL; Phosphor icons use MIT; synthesized audio has no third-party samples. License files accompany the assets. Godot uses the [MIT license](https://godotengine.org/license/).

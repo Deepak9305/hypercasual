@@ -1,8 +1,8 @@
 {
-	"android_device_tested": false,
-	"checks": 29,
-	"desktop_render_fps": 60.0062406490275,
-	"failures": [],
-	"status": "passed",
-	"viewport": "(780.0, 1688.0)"
+  "android_device_tested": false,
+  "checks": 39,
+  "desktop_render_fps": 42.8458652133349,
+  "failures": [],
+  "status": "passed",
+  "viewport": "(780.0, 1688.0)"
 }
